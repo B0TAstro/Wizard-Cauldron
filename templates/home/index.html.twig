@@ -1,0 +1,311 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello World{% endblock %}
+
+{% block stylesheets %}
+<style>
+  :root{
+    --bg: #0b0c10;
+    --fg: #ffffff;
+    --muted: #a8b0c3;
+    --tint: #0a84ff; /* iOS blue */
+    --card: rgba(255,255,255,.08);
+    --stroke: rgba(255,255,255,.12);
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+    --radius: 22px;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg: #f4f6fb;
+      --fg: #0b0c10;
+      --muted:#5a6477;
+      --card: rgba(255,255,255,.7);
+      --stroke: rgba(0,0,0,.08);
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    color:var(--fg);
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(10,132,255,.18), transparent 60%),
+      radial-gradient(900px 550px at 0% 0%, rgba(52,199,89,.18), transparent 60%),
+      var(--bg);
+    font-family: ui-rounded, "SF Pro Rounded", "SF Pro Display", system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .shell{
+    min-height:100%;
+    display:grid;
+    grid-template-rows: min-content 1fr;
+  }
+  /* Dynamic-Island-like header */
+  .island{
+    margin:18px auto 0;
+    background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,0)) border-box, var(--card);
+    border:1px solid var(--stroke);
+    border-radius:28px;
+    padding:10px 14px;
+    width:min(760px, calc(100% - 32px));
+    display:flex; align-items:center; gap:12px; justify-content:space-between;
+    box-shadow: var(--shadow);
+    backdrop-filter: saturate(140%) blur(14px);
+  }
+  .island .left{display:flex; align-items:center; gap:10px}
+  .dot{
+    width:10px;height:10px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #34c759, #0a5);
+    box-shadow:0 0 0 2px rgba(52,199,89,.25);
+  }
+  .title{font-weight:700; letter-spacing:.2px}
+  .right{display:flex; gap:8px; align-items:center}
+  .segmented{
+    background: rgba(255,255,255,.08);
+    border:1px solid var(--stroke);
+    border-radius:14px;
+    padding:4px;
+    display:inline-grid;
+    grid-auto-flow:column;
+    gap:4px;
+  }
+  .segmented button{
+    appearance:none; border:0; cursor:pointer;
+    padding:8px 12px; border-radius:10px; font-weight:600; color:var(--muted);
+    background:transparent; transition:transform .06s ease;
+  }
+  .segmented button.active{
+    color:var(--fg);
+    background:rgba(255,255,255,.28);
+    box-shadow: inset 0 0 0 1px var(--stroke);
+  }
+  main{
+    display:grid; place-items:center; padding:28px 16px 40px;
+  }
+  .card{
+    width:min(880px, 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,0)) border-box, var(--card);
+    border:1px solid var(--stroke);
+    border-radius: var(--radius);
+    padding:28px;
+    box-shadow: var(--shadow);
+    backdrop-filter: saturate(140%) blur(18px);
+  }
+  .hero{
+    display:grid; gap:8px; margin-bottom:18px;
+  }
+  .hero h1{
+    margin:0; font-size: clamp(28px, 4.2vw, 42px); line-height:1.05; letter-spacing:.2px;
+  }
+  .hero p{margin:0; color:var(--muted)}
+  .panel{
+    display:grid; grid-template-columns: 1fr; gap:16px; margin-top:18px;
+  }
+  .glass{
+    background: rgba(255,255,255,.06);
+    border:1px solid var(--stroke);
+    border-radius: 18px;
+    padding:16px 18px;
+  }
+  .row{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between}
+  .chip{
+    font-size:13px; color:var(--muted);
+    border:1px solid var(--stroke); border-radius:999px; padding:6px 10px;
+    background: rgba(255,255,255,.04);
+  }
+  .btn{
+    appearance:none; border:0; cursor:pointer; border-radius:14px; font-weight:700;
+    padding:12px 16px; transition: transform .06s ease, box-shadow .15s ease, background .15s ease, opacity .15s ease;
+    color:#fff; background: linear-gradient(180deg, #0a84ff, #0063e6);
+    box-shadow: 0 8px 20px rgba(10,132,255,.35);
+  }
+  .btn:active{ transform: translateY(1px) }
+  .btn.ghost{
+    background: transparent; color: var(--fg);
+    border:1px solid var(--stroke); box-shadow:none;
+  }
+  .hello{
+    font-size: clamp(22px, 3.5vw, 28px);
+    font-weight: 800;
+    letter-spacing:.2px;
+  }
+  .grid{
+    display:grid; gap:12px; grid-template-columns: repeat(3, minmax(0,1fr));
+  }
+  @media (max-width: 760px){ .grid{grid-template-columns:1fr} }
+  .metric{
+    background: rgba(255,255,255,.05);
+    border:1px solid var(--stroke);
+    border-radius:16px; padding:14px 16px;
+  }
+  .metric .label{font-size:12px; color:var(--muted)}
+  .metric .value{font-size:22px; font-weight:800}
+  .switch{
+    display:inline-flex; align-items:center; gap:10px; user-select:none;
+  }
+  .switch input{ appearance:none; width:44px; height:26px; border-radius:999px; position:relative;
+    background: rgba(255,255,255,.24); outline:none; transition:background .2s ease;
+    border:1px solid var(--stroke);
+  }
+  .switch input::after{
+    content:""; position:absolute; inset:3px auto auto 3px; width:20px; height:20px; border-radius:50%;
+    background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transition: transform .2s ease;
+  }
+  .switch input:checked{ background: linear-gradient(180deg, #34c759, #1f9a47) }
+  .switch input:checked::after{ transform: translateX(18px) }
+  .footer{
+    margin-top:18px; display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px;
+  }
+  .kbd{
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    border:1px solid var(--stroke); border-bottom-width:2px;
+    border-radius:10px; padding:2px 6px; background: rgba(255,255,255,.06);
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  <!-- Dynamic Island -->
+  <div class="island" role="navigation" aria-label="App header">
+    <div class="left">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="title">First Project</span>
+    </div>
+    <div class="right">
+      <div class="segmented" role="tablist" aria-label="Theme">
+        <button class="active" data-theme="auto" role="tab" aria-selected="true">Auto</button>
+        <button data-theme="light" role="tab" aria-selected="false">Clair</button>
+        <button data-theme="dark" role="tab" aria-selected="false">Sombre</button>
+      </div>
+      <button class="btn ghost" id="action-doc">Doc</button>
+    </div>
+  </div>
+
+  <main>
+    <section class="card" aria-labelledby="hello-title">
+      <div class="hero">
+        <h1 id="hello-title" class="hello">Hello {{ name }} 👋</h1>
+        <p>Bienvenue sur ton écran d’accueil Symfony façon iOS. Voici des widgets fictifs pour la démo.</p>
+      </div>
+
+      <div class="panel">
+        <div class="glass">
+          <div class="row">
+            <div>
+              <div class="chip">Status • Dev</div>
+              <h3 style="margin:8px 0 0">Ton app est prête</h3>
+              <p style="margin:4px 0 0; color:var(--muted)">Tu peux maintenant créer des contrôleurs, des routes et des vues.</p>
+            </div>
+            <div style="display:flex; gap:10px">
+              <button class="btn" id="say-hi">Dire bonjour</button>
+              <button class="btn ghost" id="copy-route">Copier la route</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid" aria-label="Metrics">
+          <div class="metric">
+            <div class="label">Build</div>
+            <div class="value">✅ OK</div>
+          </div>
+          <div class="metric">
+            <div class="label">Env</div>
+            <div class="value">DEV</div>
+          </div>
+          <div class="metric">
+            <div class="label">Requests</div>
+            <div class="value"><span id="req-count">0</span> / min</div>
+          </div>
+        </div>
+
+        <div class="glass">
+          <div class="row">
+            <div class="switch">
+              <input id="demo-switch" type="checkbox" aria-label="Activer la démo">
+              <span>Activer une petite animation</span>
+            </div>
+            <div class="chip">⌘ <span class="kbd">R</span> pour recharger</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <span>Routes utiles :</span>
+        <code class="kbd">/</code>
+        <code class="kbd">/hello/{{ name|e }}</code>
+      </div>
+    </section>
+  </main>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+  // Segmented control (Auto / Light / Dark)
+  const seg = document.querySelector('.segmented');
+  const buttons = seg.querySelectorAll('button');
+  const root = document.documentElement;
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function applyTheme(mode){
+    // remove explicit theme
+    root.removeAttribute('data-theme');
+    if(mode === 'light') root.setAttribute('data-theme', 'light');
+    if(mode === 'dark') root.setAttribute('data-theme', 'dark');
+    buttons.forEach(b => b.classList.toggle('active', b.dataset.theme === mode));
+  }
+  seg.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    applyTheme(btn.dataset.theme);
+  });
+
+  // Demo interactions
+  const hi = document.getElementById('say-hi');
+  const copy = document.getElementById('copy-route');
+  const req = document.getElementById('req-count');
+  const sw = document.getElementById('demo-switch');
+  const hello = document.querySelector('.hello');
+
+  let reqVal = 0;
+  setInterval(()=>{ req.textContent = (++reqVal % 60).toString(); }, 1200);
+
+  hi.addEventListener('click', ()=>{
+    hello.animate([{transform:'translateY(0)'},{transform:'translateY(-4px)'},{transform:'translateY(0)'}],
+      {duration:260, easing:'ease-out'});
+    hello.textContent = 'Hello {{ name }} 👋 — Bienvenue !';
+  });
+
+  copy.addEventListener('click', async ()=>{
+    try {
+      await navigator.clipboard.writeText('/hello/{{ name|e('js') }}');
+      copy.textContent = 'Copié ✅';
+      setTimeout(()=> copy.textContent = 'Copier la route', 1200);
+    } catch {
+      copy.textContent = 'Impossible';
+      setTimeout(()=> copy.textContent = 'Copier la route', 1200);
+    }
+  });
+
+  sw.addEventListener('change', ()=>{
+    document.querySelector('.card').animate(
+      [{transform:'scale(1)', filter:'saturate(100%)'},
+       {transform:'scale(1.01)', filter:'saturate(120%)'},
+       {transform:'scale(1)', filter:'saturate(100%)'}],
+      {duration:360, easing:'ease-out'}
+    );
+  });
+
+  // Respect Auto theme initial state
+  applyTheme('auto');
+  prefersDark.addEventListener('change', ()=> {
+    if(!root.getAttribute('data-theme')) applyTheme('auto');
+  });
+
+  // "Doc" action
+  document.getElementById('action-doc').addEventListener('click', ()=>{
+    alert('Ici tu pourrais lier la doc de ton projet ou ouvrir un panneau d’aide.');
+  });
+</script>
+{% endblock %}
