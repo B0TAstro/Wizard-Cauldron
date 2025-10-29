@@ -104,9 +104,8 @@ UserSpell (obtention d’un sort par un user)
 ---
 
 ## ✅ TODO
-- [ ] **Modèle & DB**
-  - [ ] Entités `User`, `Spell`, `UserSpell` + **migrations**
-  - [ ] **Fixtures** `Spell`
+- [X] **Modèle & DB**
+  - [X] Entités `User`, `Spell`, `UserSpell` + **migrations**
 - [ ] **Auth & Formulaires**
   - [ ] **Register/Login** (form_login) + validation
   - [ ] Formulaires admin (création/édition Spell)
