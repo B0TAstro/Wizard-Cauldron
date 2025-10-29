@@ -16,10 +16,7 @@ class SpellType extends AbstractType
     {
         $b
             ->add('name')
-            ->add('slug', null, [
-                'attr' => ['readonly' => true],
-                'help' => 'Auto-generated from name'
-            ])
+            ->add('slug')
             ->add('rarity', ChoiceType::class, [
                 'choices' => [
                     'Common' => 'common',

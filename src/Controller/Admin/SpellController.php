@@ -36,7 +36,7 @@ final class SpellController extends AbstractController
             return $this->redirectToRoute('admin_spell_index');
         }
 
-        return $this->render('admin/spell/new.html.twig', [
+        return $this->render('admin/spells/new.html.twig', [
             'spell' => $spell,
             'form'  => $form,
         ]);
@@ -45,7 +45,7 @@ final class SpellController extends AbstractController
     #[Route('/{id}', name: 'admin_spell_show', methods: ['GET'])]
     public function show(Spell $spell): Response
     {
-        return $this->render('admin/spell/show.html.twig', [
+        return $this->render('admin/spells/show.html.twig', [
             'spell' => $spell,
         ]);
     }
@@ -62,7 +62,7 @@ final class SpellController extends AbstractController
             return $this->redirectToRoute('admin_spell_index');
         }
 
-        return $this->render('admin/spell/edit.html.twig', [
+        return $this->render('admin/spells/edit.html.twig', [
             'spell' => $spell,
             'form'  => $form,
         ]);

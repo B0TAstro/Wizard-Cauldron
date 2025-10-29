@@ -106,11 +106,11 @@ UserSpell (obtention d’un sort par un user)
 ## ✅ TODO
 - [X] **Modèle & DB**
   - [X] Entités `User`, `Spell`, `UserSpell` + **migrations**
-- [ ] **Auth & Formulaires**
+- [X] **Auth & Formulaires**
   - [X] **Register/Login** (form_login) + validation
-  - [ ] Formulaires admin (création/édition Spell)
+  - [X] Formulaires admin (création/édition Spell)
 - [ ] **Vues Admin**
-  - [ ] CRUD Spells (lister / créer / éditer / supprimer)
+  - [X] CRUD Spells (lister / créer / éditer / supprimer)
   - [ ] Liste Users avec compteur **débloqués/total** + suppression
 - [ ] **Vues User**
   - [ ] Landing `/`
@@ -126,15 +126,15 @@ UserSpell (obtention d’un sort par un user)
 ---
 
 ## 🗺️ Roadmap (révisée)
-- **Semaine 1 — Modèle & Auth**
+- **Semaine 1 — Modèle Auth & Admin**
   - Entités + migrations + fixtures Spell
-  - Register/Login (+ garde routes protégées)
-  - Squelettes de templates (layout, nav, flash)
-- **Semaine 2 — Admin d’abord**
+  - Register/Login (+ garde routes protégées)  
   - CRUD Spells complet
   - Liste Users + compteur X/Y + suppression
-- **Semaine 3 — User & Gameplay**
+- **Semaine 2 — Structure & Debut de User**
+  - Squelettes de templates (layout, nav, flash)
   - Collection (lock/obfuscation), landing
+- **Semaine 3 — User & Gameplay**
   - Daily coin + Cauldron open (RNG pondérée + session feedback)
   - Polish léger (messages, petites animations)
 
