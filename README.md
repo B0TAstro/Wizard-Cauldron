@@ -109,9 +109,9 @@ UserSpell (obtention d’un sort par un user)
 - [X] **Auth & Formulaires**
   - [X] **Register/Login** (form_login) + validation
   - [X] Formulaires admin (création/édition Spell)
-- [ ] **Vues Admin**
+- [X] **Vues Admin**
   - [X] CRUD Spells (lister / créer / éditer / supprimer)
-  - [ ] Liste Users avec compteur **débloqués/total** + suppression
+  - [X] Liste Users avec compteur **débloqués/total** + suppression
 - [ ] **Vues User**
   - [ ] Landing `/`
   - [ ] **Collection** (grille, lock obfusqué, filtres optionnels)

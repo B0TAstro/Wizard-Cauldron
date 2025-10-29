@@ -40,4 +40,11 @@ class SpellRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function countActive(): int
+    {
+        return (int)$this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->andWhere('s.isActive = :a')->setParameter('a', true)
+            ->getQuery()->getSingleScalarResult();
+    }
 }

@@ -40,4 +40,12 @@ class UserSpellRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function countUnlockedForUser(int $userId): int
+    {
+        return (int)$this->createQueryBuilder('us')
+            ->select('COUNT(us.id)')
+            ->andWhere('us.user = :u')->setParameter('u', $userId)
+            ->getQuery()->getSingleScalarResult();
+    }
 }

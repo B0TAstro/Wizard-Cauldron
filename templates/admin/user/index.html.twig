@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+{% block title %}Users
+{% endblock %}
+{% block body %}
+	<h1 class="mb-4">Users</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>Email</th>
+				<th>Roles</th>
+				<th>Coins</th>
+				<th>Unlocked</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in rows %}
+				{% set u = row.user %}
+				<tr>
+					<td>{{ u.email }}</td>
+					<td>{{ u.roles|join(', ') }}</td>
+					<td>{{ u.coins }}</td>
+					<td>{{ row.unlocked }}/{{ row.total }}</td>
+					<td>
+						<form method="post" action="{{ path('admin_user_delete', {id: u.id}) }}" onsubmit="return confirm('Delete {{ u.email }} ?');">
+							<input type="hidden" name="_token" value="{{ csrf_token('del_user_' ~ u.id) }}">
+							<button>Delete</button>
+						</form>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="5">No users</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
