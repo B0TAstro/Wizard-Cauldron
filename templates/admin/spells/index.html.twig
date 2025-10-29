@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Spell index{% endblock %}
+
+{% block body %}
+    <h1>Spell index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Slug</th>
+                <th>Rarity</th>
+                <th>ImageUrl</th>
+                <th>Description</th>
+                <th>IsActive</th>
+                <th>CreatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for spell in spells %}
+            <tr>
+                <td>{{ spell.id }}</td>
+                <td>{{ spell.name }}</td>
+                <td>{{ spell.slug }}</td>
+                <td>{{ spell.rarity }}</td>
+                <td>{{ spell.imageUrl }}</td>
+                <td>{{ spell.description }}</td>
+                <td>{{ spell.isActive ? 'Yes' : 'No' }}</td>
+                <td>{{ spell.createdAt ? spell.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_spell_show', {'id': spell.id}) }}">show</a>
+                    <a href="{{ path('app_spell_edit', {'id': spell.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_spell_new') }}">Create new</a>
+{% endblock %}

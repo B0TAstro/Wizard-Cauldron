@@ -107,7 +107,7 @@ UserSpell (obtention d’un sort par un user)
 - [X] **Modèle & DB**
   - [X] Entités `User`, `Spell`, `UserSpell` + **migrations**
 - [ ] **Auth & Formulaires**
-  - [ ] **Register/Login** (form_login) + validation
+  - [X] **Register/Login** (form_login) + validation
   - [ ] Formulaires admin (création/édition Spell)
 - [ ] **Vues Admin**
   - [ ] CRUD Spells (lister / créer / éditer / supprimer)
