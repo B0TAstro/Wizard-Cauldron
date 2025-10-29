@@ -41,8 +41,7 @@ security:
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/(login|register)$, roles: PUBLIC_ACCESS }
-        # ouvre l'accueil si tu en as un public :
-        # - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

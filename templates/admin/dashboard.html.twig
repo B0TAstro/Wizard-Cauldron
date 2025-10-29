@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+{% block title %}Admin
+{% endblock %}
+
+{% block body %}
+	<h1>Admin</h1>
+
+	<section style="margin-bottom:24px">
+		<h2 style="margin:10px 0">Users</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Email</th>
+					<th>Roles</th>
+					<th>Coins</th>
+					<th>Unlocked</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for u in users %}
+					<tr>
+						<td>{{ u.email }}</td>
+						<td>{{ u.roles }}</td>
+						<td>{{ u.coins }}</td>
+						<td>{{ u.unlocked }}/{{ u.total }}</td>
+						<td>
+							<form method="post" action="{{ path('admin_user_delete', {id: u.id}) }}" onsubmit="return confirm('Delete {{ u.email }} ?')">
+								<input type="hidden" name="_token" value="{{ csrf_token('del_user_' ~ u.id) }}">
+								<button>Delete</button>
+							</form>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="5">No users yet.</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<p style="margin-top:6px">
+			<a href="{{ path('admin_user_index') }}">Open full Users page →</a>
+		</p>
+	</section>
+
+	<section>
+		<h2 style="margin:10px 0">Spells</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Slug</th>
+					<th>Rarity</th>
+					<th>Active</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for s in spells %}
+					<tr>
+						<td>{{ s.name }}</td>
+						<td>{{ s.slug }}</td>
+						<td>{{ s.rarity }}</td>
+						<td>{{ s.isActive ? 'Yes' : 'No' }}</td>
+						<td>
+							<a href="{{ path('admin_spell_edit', {id: s.id}) }}">Edit</a>
+							<form method="post" action="{{ path('admin_spell_delete', {id: s.id}) }}" style="display:inline" onsubmit="return confirm('Delete {{ s.name }} ?')">
+								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ s.id) }}">
+								<button>Delete</button>
+							</form>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="5">No spells yet.</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<p style="margin-top:6px">
+			<a href="{{ path('admin_spell_new') }}">+ Create spell</a>
+			·
+			<a href="{{ path('admin_spell_index') }}">Open full Spells page →</a>
+		</p>
+	</section>
+{% endblock %}

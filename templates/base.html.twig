@@ -1,12 +1,56 @@
 <!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <title>{% block title %}App{% endblock %}</title>
-    {% block stylesheets %}{% endblock %}
-  </head>
-  <body>
-    {% block body %}{% endblock %}
-    {% block javascripts %}{% endblock %}
-  </body>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Wizard Cauldron
+			{% endblock %}
+		</title>
+		{% block stylesheets %}{% endblock %}
+		{% block javascripts %}{% endblock %}
+		<style>
+			header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 10px 14px;
+				border-bottom: 1px solid #eee;
+			}
+			nav a,
+			header form button {
+				margin-left: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a href="{{ path('root') }}" style="font-weight:700">🧪 Wizard Cauldron</a>
+			<nav>
+				{% if app.user %}
+					{% if is_granted('ROLE_ADMIN') %}
+						<a href="{{ path('admin_dashboard') }}">Admin</a>
+					{% else %}
+          	<a href="{{ path('root') }}">Accueil</a>
+						{# <a href="{{ path('app_collection') }}">Collection</a>
+						<a href="{{ path('app_cauldron') }}">Cauldron</a> #}
+					{% endif %}
+					<span style="opacity:.7;margin-left:6px">{{ app.user.email }}</span>
+					<form action="{{ path('app_logout') }}" method="post" style="display:inline">
+						<button type="submit">Logout</button>
+					</form>
+				{% else %}
+					<a href="{{ path('app_login') }}">Login</a>
+					<a href="{{ path('app_register') }}">Register</a>
+				{% endif %}
+			</nav>
+		</header>
+
+		{% for label, messages in app.flashes %}
+			{% for m in messages %}
+				<div style="margin:8px 14px">{{ m }}</div>
+			{% endfor %}
+		{% endfor %}
+
+		{% block body %}{% endblock %}
+	</body>
 </html>

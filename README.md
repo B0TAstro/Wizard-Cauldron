@@ -131,11 +131,11 @@ UserSpell (obtention d’un sort par un user)
   - Register/Login (+ garde routes protégées)  
   - CRUD Spells complet
   - Liste Users + compteur X/Y + suppression
+  - Collection (lock/obfuscation), landing
 - **Semaine 2 — Structure & Debut de User**
   - Squelettes de templates (layout, nav, flash)
-  - Collection (lock/obfuscation), landing
-- **Semaine 3 — User & Gameplay**
   - Daily coin + Cauldron open (RNG pondérée + session feedback)
+- **Semaine 3 — User & Gameplay**
   - Polish léger (messages, petites animations)
 
 ---
