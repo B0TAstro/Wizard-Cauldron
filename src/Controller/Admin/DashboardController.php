@@ -15,13 +15,16 @@ final class DashboardController extends AbstractController
     #[Route('', name: 'admin', methods: ['GET'])]
     public function __invoke(
         UserRepository $users,
-        UserSpellRepository $userSpells,
-        SpellRepository $spells
+        SpellRepository $spells,
+        UserSpellRepository $userSpells
     ): Response {
+        $totalUsers       = $users->count([]);
+        $totalSpells      = $spells->count([]);
+        $activeSpells     = $spells->count(['isActive' => true]);
         $allUsers = $users->findBy([], ['createdAt' => 'DESC']);
         $totalActive = $spells->countActive();
 
-        $userRows = array_map(function($u) use ($userSpells, $totalActive) {
+        $userRows = array_map(function ($u) use ($userSpells, $totalActive) {
             return [
                 'id'       => $u->getId(),
                 'pseudo'   => $u->getPseudo(),
@@ -36,8 +39,11 @@ final class DashboardController extends AbstractController
         $recentSpells = $spells->findBy(['isActive' => true], ['createdAt' => 'DESC'], 20);
 
         return $this->render('admin/dashboard.html.twig', [
-            'users'  => $userRows,
-            'spells' => $recentSpells,
+            'users'        => $userRows,
+            'spells'       => $recentSpells,
+            'totalUsers'   => $totalUsers,
+            'totalSpells'  => $totalSpells,
+            'activeSpells' => $activeSpells,
         ]);
     }
 }

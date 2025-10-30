@@ -1,9 +1,25 @@
 {% extends 'base.html.twig' %}
-{% block title %}Dashboard
+{% block title %}Dashboard Admin
 {% endblock %}
 
 {% block body %}
-	<h1 class="text-xl font-semibold mb-4">Dashboard</h1>
+	<h1 class="text-xl font-semibold mb-4">Dashboard Admin</h1>
+	<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+		<div class="rounded-xl border border-white/10 bg-white/5 p-4">
+			<div class="text-sm text-white/70">Total Users</div>
+			<div class="mt-1 text-2xl font-semibold">{{ totalUsers ?? 0 }}</div>
+		</div>
+
+		<div class="rounded-xl border border-white/10 bg-white/5 p-4">
+			<div class="text-sm text-white/70">Total Spells</div>
+			<div class="mt-1 text-2xl font-semibold">{{ totalSpells ?? 0 }}</div>
+		</div>
+
+		<div class="rounded-xl border border-white/10 bg-white/5 p-4">
+			<div class="text-sm text-white/70">Active Spells</div>
+			<div class="mt-1 text-2xl font-semibold">{{ activeSpells ?? 0 }}</div>
+		</div>
+	</div>
 
 	<section class="mb-8">
 		<h2 class="text-lg font-medium mb-3">Users</h2>

@@ -33,7 +33,6 @@ final class UserType extends AbstractType
             ->add('coins', IntegerType::class, [
                 'attr' => ['min' => 0, 'class' => 'w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2'],
             ])
-            // rôle: simple toggle via bouton; si tu veux l’éditer ici:
             ->add('roles', ChoiceType::class, [
                 'choices'  => ['Admin' => 'ROLE_ADMIN'],
                 'expanded' => true,
