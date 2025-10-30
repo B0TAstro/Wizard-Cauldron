@@ -1,86 +1,114 @@
 {% extends 'base.html.twig' %}
-{% block title %}Admin
+{% block title %}Dashboard
 {% endblock %}
 
 {% block body %}
-	<h1>Admin</h1>
+	<h1 class="text-xl font-semibold mb-4">Dashboard</h1>
 
-	<section style="margin-bottom:24px">
-		<h2 style="margin:10px 0">Users</h2>
-		<table>
-			<thead>
-				<tr>
-					<th>Email</th>
-					<th>Roles</th>
-					<th>Coins</th>
-					<th>Unlocked</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for u in users %}
+	<section class="mb-8">
+		<h2 class="text-lg font-medium mb-3">Users</h2>
+
+		<div class="overflow-x-auto rounded-xl border border-white/10">
+			<table class="w-full text-sm">
+				<thead class="bg-white/5 text-white/70">
 					<tr>
-						<td>{{ u.email }}</td>
-						<td>{{ u.roles }}</td>
-						<td>{{ u.coins }}</td>
-						<td>{{ u.unlocked }}/{{ u.total }}</td>
-						<td>
-							<form method="post" action="{{ path('admin_user_delete', {id: u.id}) }}" onsubmit="return confirm('Delete {{ u.email }} ?')">
-								<input type="hidden" name="_token" value="{{ csrf_token('del_user_' ~ u.id) }}">
-								<button>Delete</button>
-							</form>
-						</td>
+						<th class="px-3 py-2">Pseudo</th>
+						<th class="px-3 py-2">Email</th>
+						<th class="px-3 py-2">Roles</th>
+						<th class="px-3 py-2">Coins</th>
+						<th class="px-3 py-2">Unlocked</th>
+						<th class="px-3 py-2">Actions</th>
 					</tr>
-				{% else %}
-					<tr>
-						<td colspan="5">No users yet.</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<p style="margin-top:6px">
-			<a href="{{ path('admin_user') }}">Open full Users page →</a>
-		</p>
+				</thead>
+				<tbody>
+					{% for u in users %}
+						<tr class="border-t text-center border-white/10 even:bg-white/5">
+							<td class="px-3 py-2 font-medium">{{ u.pseudo }}</td>
+							<td class="px-3 py-2">{{ u.email }}</td>
+							<td class="px-3 py-2">
+								{% set isAdmin = 'ROLE_ADMIN' in u.roles %}
+								<span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs border {{ isAdmin ? 'border-amber-400/40 text-amber-200' : 'border-white/20 text-white/70' }}">
+									{{ u.roles|join(', ') }}
+								</span>
+							</td>
+
+							<td class="px-3 py-2">{{ u.coins }}</td>
+							<td class="px-3 py-2">{{ u.unlocked }}/{{ u.total }}</td>
+							<td class="px-3 py-2">
+								<div class="flex justify-end gap-2">
+									<form method="post" action="{{ path('admin_user_toggle_admin', {id: u.id}) }}">
+										<input type="hidden" name="_token" value="{{ csrf_token('toggle_admin_' ~ u.id) }}">
+										<button class="px-2.5 py-1.5 rounded-lg border {{ ('ROLE_ADMIN' in u.roles) ? 'border-amber-400/40 hover:bg-amber-500/10' : 'border-white/20 hover:bg-white/10' }}">
+											{{ ('ROLE_ADMIN' in u.roles) ? 'Revoke Admin' : 'Make Admin' }}
+										</button>
+									</form>
+
+									<form method="post" action="{{ path('admin_user_addcoins', {id: u.id}) }}">
+										<input type="hidden" name="_token" value="{{ csrf_token('add_coins_' ~ u.id) }}">
+										<input type="hidden" name="amount" value="10">
+										<button class="px-2.5 py-1.5 rounded-lg border border-white/20 hover:bg-white/10">+10</button>
+									</form>
+
+									<a href="{{ path('admin_user_edit', {id: u.id}) }}" class="px-2.5 py-1.5 rounded-lg border border-white/20 hover:bg-white/10">Edit</a>
+
+									<form method="post" action="{{ path('admin_user_delete', {id: u.id}) }}" onsubmit="return confirm('Delete {{ u.email }} ?')">
+										<input type="hidden" name="_token" value="{{ csrf_token('del_user_' ~ u.id) }}">
+										<button class="px-2.5 py-1.5 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10">Delete</button>
+									</form>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="6" class="px-3 py-8 text-center text-white/60">No users yet</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</section>
 
 	<section>
-		<h2 style="margin:10px 0">Spells</h2>
-		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Slug</th>
-					<th>Rarity</th>
-					<th>Active</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for s in spells %}
+		<h2 class="text-lg font-medium mb-3">Spells</h2>
+		<div class="overflow-x-auto rounded-xl border border-white/10">
+			<table class="w-full text-sm">
+				<thead class="bg-white/5 text-white/70">
 					<tr>
-						<td>{{ s.name }}</td>
-						<td>{{ s.slug }}</td>
-						<td>{{ s.rarity }}</td>
-						<td>{{ s.isActive ? 'Yes' : 'No' }}</td>
-						<td>
-							<a href="{{ path('admin_spell_edit', {id: s.id}) }}">Edit</a>
-							<form method="post" action="{{ path('admin_spell_delete', {id: s.id}) }}" style="display:inline" onsubmit="return confirm('Delete {{ s.name }} ?')">
-								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ s.id) }}">
-								<button>Delete</button>
-							</form>
-						</td>
+						<th class="px-3 py-2 text-left">Name</th>
+						<th class="px-3 py-2 text-left">Slug</th>
+						<th class="px-3 py-2">Rarity</th>
+						<th class="px-3 py-2">Description</th>
+						<th class="px-3 py-2">Active</th>
+						<th class="px-3 py-2 text-right">Actions</th>
 					</tr>
-				{% else %}
-					<tr>
-						<td colspan="5">No spells yet.</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<p style="margin-top:6px">
-			<a href="{{ path('admin_spell_new') }}">+ Create spell</a>
-			·
-			<a href="{{ path('admin_spell') }}">Open full Spells page →</a>
-		</p>
+				</thead>
+				<tbody>
+					{% for s in spells %}
+						<tr class="border-t border-white/10 even:bg-white/5">
+							<td class="px-3 py-2 font-medium">{{ s.name }}</td>
+							<td class="px-3 py-2 text-white/70">{{ s.slug }}</td>
+							<td class="px-3 py-2 text-center">{{ s.rarity }}</td>
+							<td class="px-3 py-2 text-center">{{ s.description }}</td>
+							<td class="px-3 py-2 text-center">
+								<span class="inline-block w-2.5 h-2.5 rounded-full {{ s.isActive ? 'bg-green-400' : 'bg-red-400' }}"></span>
+							</td>
+							<td class="px-3 py-2">
+								<div class="flex justify-end gap-2">
+									<a href="{{ path('admin_spell_edit', {id: s.id}) }}" class="px-2.5 py-1.5 rounded-lg border border-white/20 hover:bg-white/10">Edit</a>
+									<form method="post" action="{{ path('admin_spell_delete', {id: s.id}) }}" onsubmit="return confirm('Delete {{ s.name }} ?')">
+										<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ s.id) }}">
+										<button class="px-2.5 py-1.5 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10">Delete</button>
+									</form>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="5" class="px-3 py-8 text-center text-white/60">No spells yet</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</section>
 {% endblock %}

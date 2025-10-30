@@ -54,7 +54,7 @@ Côté **admin**, on gère le **catalogue de sorts** et les **utilisateurs**
 ```text
 User
 - id (PK)
-- email (unique), password (hash), roles (json)    # ROLE_USER, ROLE_ADMIN
+- pseudo (unique), email (unique), password (hash), roles (json)    # ROLE_USER, ROLE_ADMIN
 - coins (int)
 - lastDailyAt (datetime_immutable|null)
 - createdAt (datetime_immutable)
@@ -130,7 +130,7 @@ UserSpell (obtention d’un sort par un user)
   - Entités + migrations + fixtures Spell
   - Register/Login (+ garde routes protégées)  
   - CRUD Spells complet
-  - Liste Users + compteur X/Y + suppression
+  - Liste Users + compteur + suppression
   - Collection (lock/obfuscation), landing
 - **Semaine 2 — Structure & Debut de User**
   - Squelettes de templates (layout, nav, flash)
@@ -142,3 +142,7 @@ UserSpell (obtention d’un sort par un user)
 
 ### Licence
 À définir (MIT par défaut).
+
+
+creer une commande pour creer un user admin
+utiliser les form

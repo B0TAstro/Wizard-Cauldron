@@ -1,38 +1,78 @@
 {% extends 'base.html.twig' %}
 {% block title %}Users
 {% endblock %}
+
 {% block body %}
-	<h1 class="mb-4">Users</h1>
-	<table>
-		<thead>
-			<tr>
-				<th>Email</th>
-				<th>Roles</th>
-				<th>Coins</th>
-				<th>Unlocked</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for row in rows %}
-				{% set u = row.user %}
+	<h1 class="mb-4 text-xl font-semibold">Users</h1>
+
+	<div class="overflow-x-auto rounded-xl border border-white/10">
+		<table class="w-full text-sm">
+			<thead class="bg-white/5 text-white/70">
 				<tr>
-					<td>{{ u.email }}</td>
-					<td>{{ u.roles|join(', ') }}</td>
-					<td>{{ u.coins }}</td>
-					<td>{{ row.unlocked }}/{{ row.total }}</td>
-					<td>
-						<form method="post" action="{{ path('admin_user_delete', {id: u.id}) }}" onsubmit="return confirm('Delete {{ u.email }} ?');">
-							<input type="hidden" name="_token" value="{{ csrf_token('del_user_' ~ u.id) }}">
-							<button>Delete</button>
-						</form>
-					</td>
+					<th class="px-3 py-2 text-left">ID</th>
+					<th class="px-3 py-2 text-left">Pseudo</th>
+					<th class="px-3 py-2 text-left">Email</th>
+					<th class="px-3 py-2">Roles</th>
+					<th class="px-3 py-2">Coins</th>
+					<th class="px-3 py-2">Unlocked</th>
+					<th class="px-3 py-2">Last daily</th>
+					<th class="px-3 py-2">Created</th>
+					<th class="px-3 py-2 text-right">Actions</th>
 				</tr>
-			{% else %}
-				<tr>
-					<td colspan="5">No users</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{% for u in users %}
+					{% set isAdmin = 'ROLE_ADMIN' in u.roles %}
+					<tr class="border-t border-white/10 even:bg-white/5">
+						<td class="px-3 py-2 text-white/60">{{ u.id }}</td>
+						<td class="px-3 py-2 font-medium">{{ u.pseudo }}</td>
+						<td class="px-3 py-2">{{ u.email }}</td>
+
+						<td class="px-3 py-2 text-center">
+							<span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs border
+									                         {{ isAdmin ? 'border-amber-400/40 text-amber-200' : 'border-white/20 text-white/70' }}">
+								{{ u.roles|join(', ') }}
+							</span>
+						</td>
+
+						<td class="px-3 py-2 text-center">{{ u.coins }}</td>
+						<td class="px-3 py-2 text-center">{{ u.unlocked }}/{{ u.total }}</td>
+
+						<td class="px-3 py-2 text-center">
+							{% if u.lastDaily %}
+								<time datetime="{{ u.lastDaily|date('c') }}" class="text-white/80">
+									{{ u.lastDaily|date('Y-m-d H:i') }}
+								</time>
+							{% else %}
+								<span class="text-white/40">—</span>
+							{% endif %}
+						</td>
+
+						<td class="px-3 py-2 text-center">
+							<time datetime="{{ u.createdAt|date('c') }}" class="text-white/80">
+								{{ u.createdAt|date('Y-m-d H:i') }}
+							</time>
+						</td>
+
+						<td class="px-3 py-2">
+							<div class="flex justify-end gap-2">
+								<a href="{{ path('admin_user_edit', {id: u.id}) }}" class="px-2.5 py-1.5 rounded-lg border border-white/20 hover:bg-white/10">Edit</a>
+
+								<form method="post" action="{{ path('admin_user_delete', {id: u.id}) }}" onsubmit="return confirm('Delete {{ u.email }} ?')">
+									<input type="hidden" name="_token" value="{{ csrf_token('del_user_' ~ u.id) }}">
+									<button class="px-2.5 py-1.5 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10">
+										Delete
+									</button>
+								</form>
+							</div>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="9" class="px-3 py-8 text-center text-white/60">No users</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endblock %}

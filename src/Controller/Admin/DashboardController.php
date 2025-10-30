@@ -24,6 +24,7 @@ final class DashboardController extends AbstractController
         $userRows = array_map(function($u) use ($userSpells, $totalActive) {
             return [
                 'id'       => $u->getId(),
+                'pseudo'   => $u->getPseudo(),
                 'email'    => $u->getEmail(),
                 'roles'    => implode(', ', $u->getRoles()),
                 'coins'    => $u->getCoins(),

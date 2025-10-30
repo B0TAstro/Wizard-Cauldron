@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% block title %}Edit user
+{% endblock %}
+
+{% block body %}
+	<h1 class="text-xl font-semibold mb-4">Edit user</h1>
+
+	{{ form_start(form, { attr: { class: 'space-y-4 max-w-lg' } }) }}
+	<div>
+		{{ form_label(form.pseudo, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
+		{{ form_widget(form.pseudo) }}
+		{{ form_errors(form.pseudo) }}
+	</div>
+
+	<div>
+		{{ form_label(form.email, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
+		{{ form_widget(form.email) }}
+		{{ form_errors(form.email) }}
+	</div>
+
+	<div>
+		{{ form_label(form.coins, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
+		{{ form_widget(form.coins) }}
+		{{ form_errors(form.coins) }}
+	</div>
+
+	<div>
+		{{ form_label(form.roles, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
+		<div class="rounded-lg border border-white/10 p-3">
+			{{ form_widget(form.roles) }}
+		</div>
+		{{ form_errors(form.roles) }}
+	</div>
+
+	<div>
+		{{ form_label(form.newPassword, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
+		{{ form_widget(form.newPassword) }}
+		{{ form_errors(form.newPassword) }}
+		<p class="text-xs text-white/50 mt-1">Leave blank to keep current password.</p>
+	</div>
+
+	<button class="px-3 py-2 rounded-lg bg-white text-black hover:bg-white/90">Save</button>
+	<a href="{{ path('admin') }}" class="ml-2 underline hover:text-white">Cancel</a>
+	{{ form_end(form) }}
+{% endblock %}
