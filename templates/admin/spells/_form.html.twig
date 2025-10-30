@@ -1,4 +1,49 @@
-{{ form_start(form) }}
-{{ form_widget(form) }}
-<button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, { attr: { class: 'space-y-4' } }) }}
+
+<div>
+	{{ form_label(form.name, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
+	{{ form_widget(form.name, { attr: { class: 'w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2' } }) }}
+	{{ form_errors(form.name) }}
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+	<div>
+		{{ form_label(form.slug, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
+		{{ form_widget(form.slug, { attr: { class: 'w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2' } }) }}
+		{{ form_errors(form.slug) }}
+	</div>
+
+	<div>
+		{{ form_label(form.rarity, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
+		{{ form_widget(form.rarity, { attr: { class: 'w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2' } }) }}
+		{{ form_errors(form.rarity) }}
+	</div>
+</div>
+
+<div>
+	{{ form_label(form.imageUrl, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
+	{{ form_widget(form.imageUrl, { attr: { class: 'w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2' } }) }}
+	{{ form_errors(form.imageUrl) }}
+</div>
+
+<div>
+	{{ form_label(form.description, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
+	{{ form_widget(form.description, { attr: { rows: 5, class: 'w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2' } }) }}
+	{{ form_errors(form.description) }}
+</div>
+
+<div class="flex items-center justify-between">
+	<label class="inline-flex items-center gap-2">
+		{{ form_widget(form.isActive, { attr: { class: 'size-4 rounded border-white/20' } }) }}
+		<span class="text-sm">Active</span>
+	</label>
+
+	<div class="flex items-center gap-2">
+		<a href="{{ path('admin_spell') }}" class="px-3 py-2 rounded-lg border border-white/15 hover:bg-white/10">Cancel</a>
+		<button class="px-3 py-2 rounded-lg bg-white text-black hover:bg-white/90">
+			{{ button_label|default('Save') }}
+		</button>
+	</div>
+</div>
+
 {{ form_end(form) }}

@@ -48,35 +48,83 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTimeImmutable();
     }
 
-    public function getId(): ?int { return $this->id; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getPseudo(): ?string { return $this->pseudo; }
-    public function setPseudo(string $pseudo): self { $this->pseudo = $pseudo; return $this; }
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+    public function setPseudo(string $pseudo): self
+    {
+        $this->pseudo = $pseudo;
+        return $this;
+    }
 
-    public function getEmail(): ?string { return $this->email; }
-    public function setEmail(string $email): self { $this->email = $email; return $this; }
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+        return $this;
+    }
 
-    public function getUserIdentifier(): string { return (string) ($this->pseudo ?? ''); }
+    public function getUserIdentifier(): string
+    {
+        return (string) ($this->pseudo ?? '');
+    }
 
-    /** @return string[] */
+    public function setRoles(array $roles): self
+    {
+        $roles[] = 'ROLE_USER';
+        $this->roles = array_values(array_unique($roles));
+        return $this;
+    }
+
     public function getRoles(): array
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
         return array_unique($roles);
     }
-    /** @param string[] $roles */
-    public function setRoles(array $roles): self { $this->roles = $roles; return $this; }
 
-    public function getPassword(): string { return $this->password ?? ''; }
-    public function setPassword(string $password): self { $this->password = $password; return $this; }
+    public function getPassword(): string
+    {
+        return $this->password ?? '';
+    }
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+        return $this;
+    }
     public function eraseCredentials(): void {}
 
-    public function getCoins(): int { return $this->coins; }
-    public function setCoins(int $coins): self { $this->coins = $coins; return $this; }
+    public function getCoins(): int
+    {
+        return $this->coins;
+    }
+    public function setCoins(int $coins): self
+    {
+        $this->coins = $coins;
+        return $this;
+    }
 
-    public function getLastDailyAt(): ?\DateTimeImmutable { return $this->lastDailyAt; }
-    public function setLastDailyAt(?\DateTimeImmutable $d): self { $this->lastDailyAt = $d; return $this; }
+    public function getLastDailyAt(): ?\DateTimeImmutable
+    {
+        return $this->lastDailyAt;
+    }
+    public function setLastDailyAt(?\DateTimeImmutable $d): self
+    {
+        $this->lastDailyAt = $d;
+        return $this;
+    }
 
-    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
 }

@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -16,6 +15,7 @@ final class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $isCreate = (bool) ($options['require_password'] ?? false);
         $builder
             ->add('pseudo', null, [
                 'label' => 'Username',
@@ -41,17 +41,24 @@ final class UserType extends AbstractType
             ])
             ->add('newPassword', PasswordType::class, [
                 'mapped' => false,
-                'required' => false,
-                'label' => 'New password',
-                'attr' => ['autocomplete' => 'new-password', 'class' => 'w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2'],
-                'constraints' => [
-                    new Assert\Length(min: 6, minMessage: 'At least {{ limit }} characters'),
+                'required' => $isCreate, 
+                'label' => $isCreate ? 'Password' : 'New password',
+                'attr' => [
+                    'autocomplete' => $isCreate ? 'new-password' : 'off',
+                    'class' => 'w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2'
                 ],
+                'constraints' => array_filter([
+                    $isCreate ? new Assert\NotBlank() : null,
+                    new Assert\Length(min: 6, minMessage: 'At least {{ limit }} characters'),
+                ]),
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => User::class]);
+        $resolver->setDefaults([
+            'data_class'        => User::class,
+            'require_password'  => false,
+        ]);
     }
 }

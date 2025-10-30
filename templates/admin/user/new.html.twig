@@ -1,29 +1,29 @@
 {% extends 'base.html.twig' %}
-{% block title %}Edit user
+{% block title %}Create user
 {% endblock %}
 
 {% block body %}
-	<h1 class="text-xl font-semibold mb-4">Edit user</h1>
+	<h1 class="text-xl font-semibold mb-4">Create user</h1>
 
 	<div class="max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-5">
 		{{ form_start(form, { attr: { class: 'space-y-4' } }) }}
 
 		<div>
 			{{ form_label(form.pseudo, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
-			{{ form_widget(form.pseudo, { attr: { class: 'w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2' } }) }}
+			{{ form_widget(form.pseudo) }}
 			{{ form_errors(form.pseudo) }}
 		</div>
 
 		<div>
 			{{ form_label(form.email, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
-			{{ form_widget(form.email, { attr: { class: 'w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2' } }) }}
+			{{ form_widget(form.email) }}
 			{{ form_errors(form.email) }}
 		</div>
 
 		<div class="grid grid-cols-2 gap-3">
 			<div>
 				{{ form_label(form.coins, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
-				{{ form_widget(form.coins, { attr: { class: 'w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2' } }) }}
+				{{ form_widget(form.coins) }}
 				{{ form_errors(form.coins) }}
 			</div>
 
@@ -38,13 +38,12 @@
 
 		<div>
 			{{ form_label(form.newPassword, null, { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
-			{{ form_widget(form.newPassword, { attr: { class: 'w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2' } }) }}
+			{{ form_widget(form.newPassword) }}
 			{{ form_errors(form.newPassword) }}
-			<p class="text-xs text-white/50 mt-1">Leave blank to keep current password.</p>
 		</div>
 
 		<div class="flex items-center gap-2 pt-2">
-			<button class="px-3 py-2 rounded-lg bg-white text-black hover:bg-white/90">Save</button>
+			<button class="px-3 py-2 rounded-lg bg-white text-black hover:bg-white/90">Create</button>
 			<a href="{{ path('admin_user') }}" class="px-3 py-2 rounded-lg border border-white/15 hover:bg-white/10">Cancel</a>
 		</div>
 

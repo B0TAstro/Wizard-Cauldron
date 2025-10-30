@@ -42,6 +42,39 @@ final class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/new', name: 'admin_user_new', methods: ['GET', 'POST'])]
+    public function new(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $hasher
+    ): Response {
+        $user = new User();
+        $user->setCoins(0);
+
+        $form = $this->createForm(UserType::class, $user, [
+            'require_password' => true,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var string $plain */
+            $plain = (string) $form->get('newPassword')->getData();
+            $user->setPassword($hasher->hashPassword($user, $plain));
+            $user->setRoles(array_values(array_unique($user->getRoles())));
+
+            $em->persist($user);
+            $em->flush();
+
+            $this->addFlash('success', 'User created.');
+            return $this->redirectToRoute('admin_user');
+        }
+
+        return $this->render('admin/user/new.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+
     #[Route('/{id}/edit', name: 'admin_user_edit', methods: ['GET', 'POST'])]
     public function edit(User $user, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
     {
@@ -54,6 +87,7 @@ final class UserController extends AbstractController
             if ($plain) {
                 $user->setPassword($hasher->hashPassword($user, $plain));
             }
+            $user->setRoles($user->getRoles());
             $em->flush();
             $this->addFlash('success', 'User updated.');
             return $this->redirectToRoute('admin_user');

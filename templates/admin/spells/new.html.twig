@@ -1,10 +1,15 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}New Spell
 {% endblock %}
 
 {% block body %}
-	<h1>Create new Spell</h1>
-	{{ include('admin/spells/_form.html.twig') }}
-	<a href="{{ path('admin_spell') }}">back to list</a>
+	<h1 class="text-xl font-semibold mb-4">Create a Spell</h1>
+
+	<div class="max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-5">
+		{{ include('admin/spells/_form.html.twig', {button_label: 'Create'}) }}
+	</div>
+
+	<p class="mt-4">
+		<a href="{{ path('admin_spell') }}" class="underline hover:text-white">← Back to list</a>
+	</p>
 {% endblock %}

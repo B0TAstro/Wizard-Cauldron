@@ -1,51 +1,46 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Spell
 {% endblock %}
 
 {% block body %}
-	<h1>Spell</h1>
+	<h1 class="text-xl font-semibold mb-4">Spell</h1>
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ spell.id }}</td>
-			</tr>
-			<tr>
-				<th>Name</th>
-				<td>{{ spell.name }}</td>
-			</tr>
-			<tr>
-				<th>Slug</th>
-				<td>{{ spell.slug }}</td>
-			</tr>
-			<tr>
-				<th>Rarity</th>
-				<td>{{ spell.rarity }}</td>
-			</tr>
-			<tr>
-				<th>ImageUrl</th>
-				<td>{{ spell.imageUrl }}</td>
-			</tr>
-			<tr>
-				<th>Description</th>
-				<td>{{ spell.description }}</td>
-			</tr>
-			<tr>
-				<th>IsActive</th>
-				<td>{{ spell.isActive ? 'Yes' : 'No' }}</td>
-			</tr>
-			<tr>
-				<th>CreatedAt</th>
-				<td>{{ spell.createdAt ? spell.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="max-w-3xl rounded-2xl border border-white/10 bg-white/5 p-5">
+		<dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+			<div>
+				<dt class="text-white/60">Name</dt>
+				<dd class="font-medium">{{ spell.name }}</dd>
+			</div>
+			<div>
+				<dt class="text-white/60">Slug</dt>
+				<dd class="font-medium">{{ spell.slug }}</dd>
+			</div>
+			<div>
+				<dt class="text-white/60">Rarity</dt>
+				<dd class="font-medium">{{ spell.rarity|capitalize }}</dd>
+			</div>
+			<div>
+				<dt class="text-white/60">Active</dt>
+				<dd class="font-medium">{{ spell.isActive ? 'Yes' : 'No' }}</dd>
+			</div>
+			<div class="sm:col-span-2">
+				<dt class="text-white/60">Image URL</dt>
+				<dd class="font-medium break-all">{{ spell.imageUrl ?: '—' }}</dd>
+			</div>
+			<div class="sm:col-span-2">
+				<dt class="text-white/60">Description</dt>
+				<dd class="font-medium whitespace-pre-line">{{ spell.description }}</dd>
+			</div>
+			<div class="sm:col-span-2">
+				<dt class="text-white/60">Created</dt>
+				<dd class="font-medium">{{ spell.createdAt ? spell.createdAt|date('Y-m-d H:i') : '—' }}</dd>
+			</div>
+		</dl>
+	</div>
 
-	<a href="{{ path('admin_spell') }}">back to list</a>
-
-	<a href="{{ path('admin_spell_edit', {'id': spell.id}) }}">edit</a>
-
-	{{ include('admin/spells/_delete_form.html.twig') }}
+	<div class="mt-4 flex items-center gap-3">
+		<a href="{{ path('admin_spell') }}" class="underline hover:text-white">← Back to list</a>
+		<a href="{{ path('admin_spell_edit', {'id': spell.id}) }}" class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10">Edit</a>
+		{{ include('admin/spells/_delete_form.html.twig', { spell: spell }) }}
+	</div>
 {% endblock %}
