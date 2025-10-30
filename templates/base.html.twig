@@ -1,56 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<title>
-			{% block title %}Wizard Cauldron
+			{% block title %}
+			Wizard Cauldron
 			{% endblock %}
 		</title>
-		{% block stylesheets %}{% endblock %}
-		{% block javascripts %}{% endblock %}
-		<style>
-			header {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				padding: 10px 14px;
-				border-bottom: 1px solid #eee;
-			}
-			nav a,
-			header form button {
-				margin-left: 10px;
-			}
-		</style>
+		<link rel="stylesheet" href="{{ asset('styles/app.css') }}"> {% block stylesheets %}{% endblock %}{% block javascripts %}{% endblock %}
 	</head>
-	<body>
-		<header>
-			<a href="{{ path('root') }}" style="font-weight:700">🧪 Wizard Cauldron</a>
-			<nav>
-				{% if app.user %}
-					{% if is_granted('ROLE_ADMIN') %}
-						<a href="{{ path('admin_dashboard') }}">Admin</a>
-					{% else %}
-          	<a href="{{ path('root') }}">Accueil</a>
-						{# <a href="{{ path('app_collection') }}">Collection</a>
-						<a href="{{ path('app_cauldron') }}">Cauldron</a> #}
+
+	<body class="bg-black text-white">
+		<header class="border-b border-white/10">
+			<div class="mx-auto max-w-6xl px-4 h-14 grid grid-cols-3 items-center">
+				<a href="{{ path('app_root') }}" class="flex items-center font-semibold">
+					<span class="text-white/90 hover:text-white">Wizard Cauldron</span>
+				</a>
+
+				<div class="justify-self-center">
+					{% if app.user %}
+						{# <a href="{{ path('app_collection') }}" class="px-3 py-1.5 rounded-lg hover:bg-white/10 transition">
+							Collection
+						</a> #}
 					{% endif %}
-					<span style="opacity:.7;margin-left:6px">{{ app.user.email }}</span>
-					<form action="{{ path('app_logout') }}" method="post" style="display:inline">
-						<button type="submit">Logout</button>
-					</form>
-				{% else %}
-					<a href="{{ path('app_login') }}">Login</a>
-					<a href="{{ path('app_register') }}">Register</a>
-				{% endif %}
-			</nav>
+				</div>
+
+				<div class="justify-self-end flex items-center gap-3">
+					{% if app.user %}
+						<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-yellow-400/30 bg-yellow-400/15 text-yellow-200 text-xs">
+							<svg class="size-3.5" viewbox="0 0 24 24" fill="currentColor">
+								<circle cx="12" cy="12" r="9"></circle>
+								<circle cx="12" cy="12" r="5" class="fill-yellow-300"></circle>
+							</svg>
+							{{ app.user.coins ?? 0 }}
+						</span>
+
+						<div class="relative">
+							<button id="accountMenuBtn" type="button" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/20 hover:bg-white/10">
+								<span class="hidden sm:inline text-xs text-white/70">{{ app.user.email }}</span>
+								<svg class="size-4" viewbox="0 0 24 24" fill="currentColor" aria-hidden="true">
+									<path d="M7 10l5 5 5-5H7z"/>
+								</svg>
+							</button>
+
+							<div id="accountMenu" class="hidden absolute right-0 mt-2 w-52 rounded-lg border border-white/10 bg-neutral-900/95 backdrop-blur shadow-lg p-1 z-10">
+								{% if is_granted('ROLE_ADMIN') %}
+									<a href="{{ path('admin_dashboard') }}" class="block px-3 py-2 rounded-md hover:bg-white/10">Dashboard</a>
+									<a href="{{ path('admin_spell_index') }}" class="block px-3 py-2 rounded-md hover:bg-white/10">Spells</a>
+									<a href="{{ path('admin_user_index') }}" class="block px-3 py-2 rounded-md hover:bg-white/10">Users</a>
+									<div class="my-1 h-px bg-white/10"></div>
+								{% endif %}
+								<form action="{{ path('app_logout') }}" method="post">
+									<button class="w-full text-left px-3 py-2 rounded-md hover:bg-white/10" role="menuitem">Logout</button>
+								</form>
+							</div>
+						</div>
+					{% else %}
+						<a href="{{ path('app_login') }}" class="px-3 py-1.5 rounded-lg hover:bg-white/10">Login</a>
+						<a href="{{ path('app_register') }}" class="px-3 py-1.5 rounded-lg bg-white text-black hover:bg-white/90 transition">
+							Register
+						</a>
+					{% endif %}
+				</div>
+			</div>
 		</header>
 
-		{% for label, messages in app.flashes %}
-			{% for m in messages %}
-				<div style="margin:8px 14px">{{ m }}</div>
-			{% endfor %}
-		{% endfor %}
-
-		{% block body %}{% endblock %}
+		<main class="mx-auto max-w-6xl px-4 py-6"> 
+			{% block body %}{% endblock %}
+		</main>
 	</body>
+	<script>
+		(function () {
+			const btn = document.getElementById('accountMenuBtn');
+			const menu = document.getElementById('accountMenu');
+			if (! btn || ! menu) 
+			return;
+
+			const close = () => {
+			if (! menu.classList.contains('hidden')) {
+			menu.classList.add('hidden');
+			btn.setAttribute('aria-expanded', 'false');
+			}
+			};
+
+			btn.addEventListener('click', (e) => {
+			e.stopPropagation();
+			const open = menu.classList.toggle('hidden');
+			btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+			});
+
+			document.addEventListener('click', (e) => {
+			if (! menu.contains(e.target) && e.target !== btn) 
+			close();
+
+			});
+
+			document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') 
+			close();
+
+			});
+		})();
+	</script>
 </html>

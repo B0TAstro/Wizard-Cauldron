@@ -1,3 +1,19 @@
-body {
-    background-color: skyblue;
+@import "tailwindcss";
+
+@layer utilities {
+    .rarity-common {
+        @apply border-slate-200 bg-white;
+    }
+
+    .rarity-rare {
+        @apply border-blue-200 bg-blue-50;
+    }
+
+    .rarity-epic {
+        @apply border-violet-200 bg-violet-50;
+    }
+
+    .rarity-legendary {
+        @apply border-yellow-200 bg-yellow-50;
+    }
 }

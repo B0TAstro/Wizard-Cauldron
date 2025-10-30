@@ -7,7 +7,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RootController extends AbstractController
 {
-    #[Route('/', name: 'root', methods: ['GET'])]
+    #[Route('/', name: 'app_root', methods: ['GET'])]
     public function __invoke(): Response
     {
         // Si admin -> dashboard
