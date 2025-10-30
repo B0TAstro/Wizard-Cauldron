@@ -10,12 +10,6 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'home', methods: ['GET'])]
     public function __invoke(): Response
     {
-        if ($this->isGranted('ROLE_ADMIN')) {
-            return $this->redirectToRoute('admin');
-        }
-        if ($this->getUser()) {
-            return $this->render('root/index.html.twig');
-        }
-        return $this->render('security/login.html.twig');
+        return $this->render('root/index.html.twig');
     }
 }

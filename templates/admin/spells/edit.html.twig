@@ -8,9 +8,4 @@
 	<div class="max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-5">
 		{{ include('admin/spells/_form.html.twig', {button_label: 'Update'}) }}
 	</div>
-
-	<div class="mt-4 flex items-center gap-3">
-		<a href="{{ path('admin_spell') }}" class="underline hover:text-white">← Back to list</a>
-		{{ include('admin/spells/_delete_form.html.twig', { spell: spell }) }}
-	</div>
 {% endblock %}

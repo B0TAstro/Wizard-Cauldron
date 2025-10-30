@@ -59,7 +59,7 @@ final class SpellController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             $this->addFlash('success', 'Sort modifié.');
-            return $this->redirectToRoute('admin_spell_index');
+            return $this->redirectToRoute('admin_spell');
         }
 
         return $this->render('admin/spells/edit.html.twig', [

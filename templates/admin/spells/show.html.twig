@@ -1,46 +1,77 @@
 {% extends 'base.html.twig' %}
-{% block title %}Spell
+{% block title %}
+	{{ spell.name }}
+{% endblock %}
+
+{# Palette par rareté #}
+{% set rarity = spell.rarity|lower %}
+{% set palette = {
+  'common':    { 'title':'text-slate-200',   'border':'border-slate-400/30',  'ring':'ring-slate-400/40',  'hex':'#94a3b8' },
+  'rare':      { 'title':'text-sky-300',     'border':'border-sky-400/30',    'ring':'ring-sky-400/40',    'hex':'#38bdf8' },
+  'epic':      { 'title':'text-violet-300',  'border':'border-violet-400/30', 'ring':'ring-violet-400/40', 'hex':'#a78bfa' },
+  'legendary': { 'title':'text-amber-300',   'border':'border-amber-400/40',  'ring':'ring-amber-400/40',  'hex':'#f59e0b' }
+} %}
+{% set colors = palette[rarity] ?? palette.common %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.glow-wrap {
+			position: relative;
+			isolation: isolate;
+		}
+		.glow-wrap::before {
+			content: "";
+			position: absolute;
+			inset: -22%;
+			z-index: 0;
+			pointer-events: none;
+			background: radial-gradient(900px 420px at 50% 50%, var(--glow) 0%, color-mix(in oklab, var(--glow), transparent 55%) 28%, transparent 60%);
+			opacity: 0;
+			transform: scale(0.98);
+			filter:blur(14px);
+			transition: opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease;
+		}
+		.glow-wrap:hover::before {
+			opacity: .55;
+			transform: scale(1.1);
+			filter:blur(22px);
+		}
+	</style>
 {% endblock %}
 
 {% block body %}
-	<h1 class="text-xl font-semibold mb-4">Spell</h1>
-
-	<div class="max-w-3xl rounded-2xl border border-white/10 bg-white/5 p-5">
-		<dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-			<div>
-				<dt class="text-white/60">Name</dt>
-				<dd class="font-medium">{{ spell.name }}</dd>
-			</div>
-			<div>
-				<dt class="text-white/60">Slug</dt>
-				<dd class="font-medium">{{ spell.slug }}</dd>
-			</div>
-			<div>
-				<dt class="text-white/60">Rarity</dt>
-				<dd class="font-medium">{{ spell.rarity|capitalize }}</dd>
-			</div>
-			<div>
-				<dt class="text-white/60">Active</dt>
-				<dd class="font-medium">{{ spell.isActive ? 'Yes' : 'No' }}</dd>
-			</div>
-			<div class="sm:col-span-2">
-				<dt class="text-white/60">Image URL</dt>
-				<dd class="font-medium break-all">{{ spell.imageUrl ?: '—' }}</dd>
-			</div>
-			<div class="sm:col-span-2">
-				<dt class="text-white/60">Description</dt>
-				<dd class="font-medium whitespace-pre-line">{{ spell.description }}</dd>
-			</div>
-			<div class="sm:col-span-2">
-				<dt class="text-white/60">Created</dt>
-				<dd class="font-medium">{{ spell.createdAt ? spell.createdAt|date('Y-m-d H:i') : '—' }}</dd>
-			</div>
-		</dl>
+	<div class="mt-6">
+		<a href="{{ path('admin_spell') }}" class="underline hover:text-white">← Back to list</a>
 	</div>
 
-	<div class="mt-4 flex items-center gap-3">
-		<a href="{{ path('admin_spell') }}" class="underline hover:text-white">← Back to list</a>
-		<a href="{{ path('admin_spell_edit', {'id': spell.id}) }}" class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10">Edit</a>
-		{{ include('admin/spells/_delete_form.html.twig', { spell: spell }) }}
+	<div class="min-h-[70vh] grid place-items-center">
+		<div class="glow-wrap w-full max-w-3xl" style="--glow: {{ colors.hex }}">
+			<article class="relative z-10 rounded-[28px] bg-black border {{ colors.border }} ring-1 {{ colors.ring }} transition-transform duration-200 hover:scale-[1.01]">
+				<div class="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-6 md:gap-8 p-6 md:p-8">
+					<div class="flex items-start md:items-center justify-center md:justify-start">
+						<div class="aspect-square w-20 md:w-24 overflow-hidden rounded-xl border {{ colors.border }} bg-black">
+							{% if spell.imageUrl %}
+								<img src="{{ spell.imageUrl }}" alt="{{ spell.name }} image" class="h-full w-full object-contain" loading="lazy" decoding="async" referrerpolicy="no-referrer"/>
+							{% else %}
+								<div class="h-full w-full grid place-items-center text-white/30 text-xs">No image</div>
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="min-w-0">
+						<h2 class="text-3xl md:text-4xl font-semibold leading-tight {{ colors.title }}">
+							{{ spell.name }}
+						</h2>
+
+						{% if spell.description %}
+							<p class="mt-3 md:mt-4 text-base md:text-lg text-white/85 leading-relaxed">
+								{{ spell.description }}
+							</p>
+						{% endif %}
+					</div>
+				</div>
+			</article>
+		</div>
 	</div>
 {% endblock %}
