@@ -7,20 +7,15 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RootController extends AbstractController
 {
-    #[Route('/', name: 'app_root', methods: ['GET'])]
+    #[Route('/', name: 'home', methods: ['GET'])]
     public function __invoke(): Response
     {
-        // Si admin -> dashboard
         if ($this->isGranted('ROLE_ADMIN')) {
-            return $this->redirectToRoute('admin_dashboard');
+            return $this->redirectToRoute('admin');
         }
-
-        // Si connecté -> petite landing simple
         if ($this->getUser()) {
             return $this->render('root/index.html.twig');
         }
-
-        // Sinon (invité) -> invite à Login/Register
-        return $this->render('root/index.html.twig');
+        return $this->render('security/login.html.twig');
     }
 }

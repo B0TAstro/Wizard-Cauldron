@@ -20,18 +20,16 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
-    public const LOGIN_ROUTE = 'app_login';
+    public const LOGIN_ROUTE = 'login';
 
     public function __construct(private UrlGeneratorInterface $urlGenerator) {}
 
     public function authenticate(Request $request): Passport
     {
-        $email = $request->getPayload()->getString('email');
-
-        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
-
+        $pseudo = $request->getPayload()->getString('pseudo');
+        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $pseudo);
         return new Passport(
-            new UserBadge($email),
+            new UserBadge($pseudo),
             new PasswordCredentials($request->getPayload()->getString('password')),
             [
                 new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),
@@ -45,12 +43,11 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-
         $user = $token->getUser();
         if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
-            return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
+            return new RedirectResponse($this->urlGenerator->generate('admin'));
         }
-        return new RedirectResponse($this->urlGenerator->generate('root'));
+        return new RedirectResponse($this->urlGenerator->generate('home'));
     }
 
     protected function getLoginUrl(Request $request): string

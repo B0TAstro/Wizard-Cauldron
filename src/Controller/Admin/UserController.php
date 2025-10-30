@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/users')]
 final class UserController extends AbstractController
 {
-    #[Route('/', name: 'admin_user_index', methods: ['GET'])]
+    #[Route('/', name: 'admin_user', methods: ['GET'])]
     public function index(
         UserRepository $users,
         UserSpellRepository $userSpells,

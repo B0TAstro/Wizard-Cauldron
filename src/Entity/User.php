@@ -11,11 +11,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email'],  message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['pseudo'], message: 'This username is already taken')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 32, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 32)]
+    private ?string $pseudo = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank, Assert\Email]
@@ -44,10 +50,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getId(): ?int { return $this->id; }
 
+    public function getPseudo(): ?string { return $this->pseudo; }
+    public function setPseudo(string $pseudo): self { $this->pseudo = $pseudo; return $this; }
+
     public function getEmail(): ?string { return $this->email; }
     public function setEmail(string $email): self { $this->email = $email; return $this; }
 
-    public function getUserIdentifier(): string { return (string) $this->email; }
+    public function getUserIdentifier(): string { return (string) ($this->pseudo ?? ''); }
 
     /** @return string[] */
     public function getRoles(): array

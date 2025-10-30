@@ -14,13 +14,13 @@
 	<body class="bg-black text-white">
 		<header class="border-b border-white/10">
 			<div class="mx-auto max-w-6xl px-4 h-14 grid grid-cols-3 items-center">
-				<a href="{{ path('app_root') }}" class="flex items-center font-semibold">
+				<a href="{{ path('home') }}" class="flex items-center font-semibold">
 					<span class="text-white/90 hover:text-white">Wizard Cauldron</span>
 				</a>
 
 				<div class="justify-self-center">
 					{% if app.user %}
-						{# <a href="{{ path('app_collection') }}" class="px-3 py-1.5 rounded-lg hover:bg-white/10 transition">
+						{# <a href="{{ path('collection') }}" class="px-3 py-1.5 rounded-lg hover:bg-white/10 transition">
 							Collection
 						</a> #}
 					{% endif %}
@@ -38,7 +38,7 @@
 
 						<div class="relative">
 							<button id="accountMenuBtn" type="button" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/20 hover:bg-white/10">
-								<span class="hidden sm:inline text-xs text-white/70">{{ app.user.email }}</span>
+								<span class="hidden sm:inline text-xs text-white/70">{{ app.user.pseudo }}</span>
 								<svg class="size-4" viewbox="0 0 24 24" fill="currentColor" aria-hidden="true">
 									<path d="M7 10l5 5 5-5H7z"/>
 								</svg>
@@ -46,19 +46,19 @@
 
 							<div id="accountMenu" class="hidden absolute right-0 mt-2 w-52 rounded-lg border border-white/10 bg-neutral-900/95 backdrop-blur shadow-lg p-1 z-10">
 								{% if is_granted('ROLE_ADMIN') %}
-									<a href="{{ path('admin_dashboard') }}" class="block px-3 py-2 rounded-md hover:bg-white/10">Dashboard</a>
-									<a href="{{ path('admin_spell_index') }}" class="block px-3 py-2 rounded-md hover:bg-white/10">Spells</a>
-									<a href="{{ path('admin_user_index') }}" class="block px-3 py-2 rounded-md hover:bg-white/10">Users</a>
+									<a href="{{ path('admin') }}" class="block px-3 py-2 rounded-md hover:bg-white/10">Dashboard</a>
+									<a href="{{ path('admin_spell') }}" class="block px-3 py-2 rounded-md hover:bg-white/10">Spells</a>
+									<a href="{{ path('admin_user') }}" class="block px-3 py-2 rounded-md hover:bg-white/10">Users</a>
 									<div class="my-1 h-px bg-white/10"></div>
 								{% endif %}
-								<form action="{{ path('app_logout') }}" method="post">
-									<button class="w-full text-left px-3 py-2 rounded-md hover:bg-white/10" role="menuitem">Logout</button>
+								<form action="{{ path('logout') }}" method="post">
+									<button class="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">Logout</button>
 								</form>
 							</div>
 						</div>
 					{% else %}
-						<a href="{{ path('app_login') }}" class="px-3 py-1.5 rounded-lg hover:bg-white/10">Login</a>
-						<a href="{{ path('app_register') }}" class="px-3 py-1.5 rounded-lg bg-white text-black hover:bg-white/90 transition">
+						<a href="{{ path('login') }}" class="px-3 py-1.5 rounded-lg hover:bg-white/10">Login</a>
+						<a href="{{ path('register') }}" class="px-3 py-1.5 rounded-lg bg-white text-black hover:bg-white/90 transition">
 							Register
 						</a>
 					{% endif %}

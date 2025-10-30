@@ -6,7 +6,7 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email
+                property: pseudo
 
     firewalls:
         dev:
@@ -18,9 +18,8 @@ security:
             lazy: true
             custom_authenticator: App\Security\LoginFormAuthenticator
             logout:
-                path: app_logout
-                # where to redirect after logout
-                target: app_login
+                path: logout
+                target: login
 
             remember_me:
                 secret: '%kernel.secret%'

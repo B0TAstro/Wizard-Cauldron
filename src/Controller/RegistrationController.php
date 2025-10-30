@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
+    #[Route('/register', name: 'register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
@@ -31,8 +31,6 @@ class RegistrationController extends AbstractController
             $user->setRoles(['ROLE_USER']);
             $entityManager->persist($user);
             $entityManager->flush();
-
-            // do anything else you need here, like send an email
 
             return $security->login($user, LoginFormAuthenticator::class, 'main');
         }

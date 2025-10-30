@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin')]
 final class DashboardController extends AbstractController
 {
-    #[Route('', name: 'admin_dashboard', methods: ['GET'])]
+    #[Route('', name: 'admin', methods: ['GET'])]
     public function __invoke(
         UserRepository $users,
         UserSpellRepository $userSpells,

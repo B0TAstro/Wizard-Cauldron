@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/spells')]
 final class SpellController extends AbstractController
 {
-    #[Route('/', name: 'admin_spell_index', methods: ['GET'])]
+    #[Route('/', name: 'admin_spell', methods: ['GET'])]
     public function index(SpellRepository $repo): Response
     {
         return $this->render('admin/spells/index.html.twig', [
