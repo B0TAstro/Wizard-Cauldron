@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Form\Admin\AddCoinsType;
+use App\Form\Admin\ToggleAdminType;
 use App\Repository\SpellRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserSpellRepository;
@@ -102,12 +104,19 @@ final class UserController extends AbstractController
     #[Route('/{id}/add-coins', name: 'admin_user_addcoins', methods: ['POST'])]
     public function addCoins(User $user, Request $request, EntityManagerInterface $em): Response
     {
-        if (!$this->isCsrfTokenValid('add_coins_' . $user->getId(), (string)$request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+        $form = $this->createForm(AddCoinsType::class);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('error', 'Invalid form.');
             return $this->redirectToRoute('admin');
         }
-        $amount = (int) $request->request->get('amount', 0);
+
+        $amount = (int) $form->get('amount')->getData();
+
+        $amount = max(-1000, min(1000, $amount));
         $user->setCoins(max(0, $user->getCoins() + $amount));
+
         $em->flush();
         $this->addFlash('success', 'Coins updated.');
         return $this->redirectToRoute('admin');
@@ -116,8 +125,11 @@ final class UserController extends AbstractController
     #[Route('/{id}/toggle-admin', name: 'admin_user_toggle_admin', methods: ['POST'])]
     public function toggleAdmin(User $user, Request $request, EntityManagerInterface $em): Response
     {
-        if (!$this->isCsrfTokenValid('toggle_admin_' . $user->getId(), (string)$request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+        $form = $this->createForm(ToggleAdminType::class);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('error', 'Invalid form.');
             return $this->redirectToRoute('admin');
         }
 

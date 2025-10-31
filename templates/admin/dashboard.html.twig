@@ -51,19 +51,25 @@
 							<td class="px-3 py-2">{{ u.coins }}</td>
 							<td class="px-3 py-2">{{ u.unlocked }}/{{ u.total }}</td>
 							<td class="px-3 py-2">
-								<div class="flex justify-end gap-2">
-									<form method="post" action="{{ path('admin_user_toggle_admin', {id: u.id}) }}">
-										<input type="hidden" name="_token" value="{{ csrf_token('toggle_admin_' ~ u.id) }}">
-										<button class="px-2.5 py-1.5 rounded-lg border {{ ('ROLE_ADMIN' in u.roles) ? 'border-amber-400/40 hover:bg-amber-500/10' : 'border-white/20 hover:bg-white/10' }}">
-											{{ ('ROLE_ADMIN' in u.roles) ? 'Revoke Admin' : 'Make Admin' }}
-										</button>
-									</form>
+								<div class="flex justify-end gap-2 items-center">
+									{{ form_start(toggleForms[u.id], { attr: { class: 'inline' } }) }}
+									<button class="px-2.5 py-1.5 rounded-lg border {{ ('ROLE_ADMIN' in u.roles) ? 'border-amber-400/40 hover:bg-amber-500/10' : 'border-white/20 hover:bg-white/10' }}">
+										{{ ('ROLE_ADMIN' in u.roles) ? 'Revoke Admin' : 'Make Admin' }}
+									</button>
+									{{ form_end(toggleForms[u.id]) }}
 
-									<form method="post" action="{{ path('admin_user_addcoins', {id: u.id}) }}">
-										<input type="hidden" name="_token" value="{{ csrf_token('add_coins_' ~ u.id) }}">
-										<input type="hidden" name="amount" value="10">
-										<button class="px-2.5 py-1.5 rounded-lg border border-white/20 hover:bg-white/10">+10</button>
-									</form>
+									{{ form_start(coinsForms[u.id], { attr: { class: 'inline-flex items-center' } }) }}
+									{{ form_widget(coinsForms[u.id].amount, {
+										attr: {
+										class: 'w-23 text-center rounded-lg border border-white/20 bg-black/40 px-2 py-1.5',
+										inputmode: 'numeric',
+										pattern: '-?[0-9]*',
+										placeholder: '+/- Coins',
+										title: 'Tape un nombre puis Entrée'
+										}
+									}) }}
+									<button type="submit" class="sr-only">Apply</button>
+									{{ form_end(coinsForms[u.id]) }}
 
 									<a href="{{ path('admin_user_edit', {id: u.id}) }}" class="px-2.5 py-1.5 rounded-lg border border-white/20 hover:bg-white/10">Edit</a>
 
@@ -71,8 +77,10 @@
 										<input type="hidden" name="_token" value="{{ csrf_token('del_user_' ~ u.id) }}">
 										<button class="px-2.5 py-1.5 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10">Delete</button>
 									</form>
+
 								</div>
 							</td>
+
 						</tr>
 					{% else %}
 						<tr>
