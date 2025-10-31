@@ -1,68 +1,81 @@
 {% extends 'base.html.twig' %}
-{% block title %}Spells
-{% endblock %}
+{% block title %}Spells{% endblock %}
 
 {% block body %}
-	<div class="mb-4 flex items-center justify-between">
-		<h1 class="text-xl font-semibold">Spells</h1>
-		<a href="{{ path('admin_spell_new') }}" class="px-3 py-2 rounded-lg bg-white text-black hover:bg-white/90">+ Create</a>
-	</div>
+  <div class="mb-4 flex items-center justify-between">
+    <h1 class="text-xl font-semibold">Spells</h1>
+    <a href="{{ path('admin_spell_new') }}" class="px-3 py-2 rounded-lg bg-white text-black hover:bg-white/90">+ Create</a>
+  </div>
 
-	<div class="overflow-x-auto rounded-2xl border border-white/10">
-		<table class="w-full text-sm">
-			<thead class="bg-white/5 text-white/70">
-				<tr>
-					<th class="px-3 py-2 text-left">Name</th>
-					<th class="px-3 py-2 text-left">Slug</th>
-					<th class="px-3 py-2">Rarity</th>
-					<th class="px-3 py-2">Description</th>
-					<th class="px-3 py-2">Active</th>
-					<th class="px-3 py-2">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for spell in spells %}
-					<tbody>
-						{% for spell in spells %}
-							<tr class="border-t border-white/10 even:bg-white/5 hover:bg-white/10 transition cursor-pointer" data-href="{{ path('admin_spell_show', {'id': spell.id}) }}">
-								<td class="px-3 py-2 font-medium">{{ spell.name }}</td>
-								<td class="px-3 py-2 text-white/70">{{ spell.slug }}</td>
-								<td class="px-3 py-2 text-center">
-									{% set color = {
-										'common':'border-slate-400/40 text-slate-200',
-										'rare':'border-sky-400/40 text-sky-200',
-										'epic':'border-violet-400/40 text-violet-200',
-										'legendary':'border-amber-400/40 text-amber-200'
-										}[spell.rarity|lower] ?? 'border-white/20 text-white/70' %}
-									<span class="inline-flex rounded-full px-2 py-0.5 text-xs border {{ color }}">
-										{{ spell.rarity|capitalize }}
-									</span>
-								</td>
-								<td class="px-3 py-2 text-center">{{ spell.description }}</td>
-								<td class="px-3 py-2 text-center">
-									<span class="inline-block w-2.5 h-2.5 rounded-full {{ spell.isActive ? 'bg-green-400' : 'bg-red-400' }}"></span>
-								</td>
-								<td class="px-3 py-2">
-									<div class="flex justify-end gap-2">
-										<a href="{{ path('admin_spell_edit', {'id': spell.id}) }}" class="px-2.5 py-1.5 rounded-lg border border-white/20 hover:bg-white/10">Edit</a>
-										{{ include('admin/spells/_delete_form.html.twig', { spell: spell }) }}
-									</div>
-								</td>
-							</tr>
-						{% else %}
-							<tr>
-								<td colspan="6" class="px-3 py-8 text-center text-white/60">No spells yet</td>
-							</tr>
-						{% endfor %}
-					</tbody>
-				{% else %}
-					<tr>
-						<td colspan="6" class="px-3 py-8 text-center text-white/60">No spells yet</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
+  <div class="overflow-x-auto rounded-2xl border border-white/10">
+    <table class="w-full text-sm table-fixed">
+      <thead class="bg-white/5 text-white/70">
+        <tr>
+          {% set cs = currentSort|default('name') %}
+          {% set cd = currentDir|default('asc') %}
+
+          {% macro th(label, field, defaultDir, cs, cd, align) %}
+            {% set is   = (cs == field) %}
+            {% set next = is ? (cd == 'asc' ? 'desc' : 'asc') : defaultDir %}
+            <th class="px-3 py-2 {{ align }}">
+              <a class="block w-full hover:underline"
+                 href="{{ path('admin_spell', {sort: field, dir: next}) }}">
+                {{ label }}
+              </a>
+            </th>
+          {% endmacro %}
+          {% import _self as H %}
+
+          {{ H.th('Name','name','asc',cs,cd,'text-left') }}
+          {{ H.th('Slug','slug','asc',cs,cd,'text-left') }}
+          {{ H.th('Rarity','rarity','asc',cs,cd,'text-center') }}
+          {{ H.th('Description','description','asc',cs,cd,'text-center') }}
+          {{ H.th('Active','active','desc',cs,cd,'text-center') }}
+
+          <th class="px-3 py-2 text-right">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for spell in spells %}
+          <tr class="border-t border-white/10 even:bg-white/5 hover:bg-white/10 transition cursor-pointer"
+              data-href="{{ path('admin_spell_show', {'id': spell.id}) }}">
+            <td class="px-3 py-2 font-medium text-left">{{ spell.name }}</td>
+            <td class="px-3 py-2 text-white/70 text-left">{{ spell.slug }}</td>
+
+            <td class="px-3 py-2 text-center">
+              {% set color = {
+                'common':'border-slate-400/40 text-slate-200',
+                'rare':'border-sky-400/40 text-sky-200',
+                'epic':'border-violet-400/40 text-violet-200',
+                'legendary':'border-amber-400/40 text-amber-200'
+              }[spell.rarity|lower] ?? 'border-white/20 text-white/70' %}
+              <span class="inline-flex rounded-full px-2 py-0.5 text-xs border {{ color }}">
+                {{ spell.rarity|capitalize }}
+              </span>
+            </td>
+
+            <td class="px-3 py-2 text-center truncate">{{ spell.description }}</td>
+
+            <td class="px-3 py-2 text-center">
+              <span class="inline-block w-2.5 h-2.5 rounded-full {{ spell.isActive ? 'bg-green-400' : 'bg-red-400' }}"></span>
+            </td>
+
+            <td class="px-3 py-2">
+              <div class="flex justify-end gap-2">
+                <a href="{{ path('admin_spell_edit', {'id': spell.id}) }}" class="px-2.5 py-1.5 rounded-lg border border-white/20 hover:bg-white/10">Edit</a>
+                {{ include('admin/spells/_delete_form.html.twig', { spell: spell }) }}
+              </div>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="6" class="px-3 py-8 text-center text-white/60">No spells yet</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}
 {% block javascripts %}
   {{ parent() }}

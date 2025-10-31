@@ -18,9 +18,7 @@
 
 			<div>
 				{{ form_label(registrationForm.pseudo, 'Username', { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
-				{{ form_widget(registrationForm.pseudo, {
-          attr: { class: 'w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 outline-none focus:border-white/30', placeholder: 'wizard_42', autocomplete: 'username' }
-        }) }}
+				{{ form_widget(registrationForm.pseudo, { attr: { class: 'w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 outline-none focus:border-white/30', placeholder: 'wizard_42', autocomplete: 'username' }}) }}
 				{% if form_errors(registrationForm.pseudo) %}
 					<p class="mt-1 text-xs text-red-300">{{ form_errors(registrationForm.pseudo) }}</p>
 				{% endif %}
@@ -28,9 +26,7 @@
 
 			<div>
 				{{ form_label(registrationForm.email, 'Email', { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
-				{{ form_widget(registrationForm.email, {
-          attr: { class: 'w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 outline-none focus:border-white/30', placeholder: '••••••@email.com', autocomplete: 'email' }
-        }) }}
+				{{ form_widget(registrationForm.email, { attr: { class: 'w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 outline-none focus:border-white/30', placeholder: '••••••@email.com', autocomplete: 'email' }}) }}
 				{% if form_errors(registrationForm.email) %}
 					<p class="mt-1 text-xs text-red-300">{{ form_errors(registrationForm.email) }}</p>
 				{% endif %}
@@ -38,9 +34,7 @@
 
 			<div>
 				{{ form_label(registrationForm.plainPassword, 'Password', { label_attr: { class: 'block text-sm mb-1 text-white/80' } }) }}
-				{{ form_widget(registrationForm.plainPassword, {
-          attr: { class: 'w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 outline-none focus:border-white/30', placeholder: '••••••••', autocomplete: 'new-password' }
-        }) }}
+				{{ form_widget(registrationForm.plainPassword, { attr: { class: 'w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 outline-none focus:border-white/30', placeholder: '••••••••', autocomplete: 'new-password' }}) }}
 				{% if form_errors(registrationForm.plainPassword) %}
 					<p class="mt-1 text-xs text-red-300">{{ form_errors(registrationForm.plainPassword) }}</p>
 				{% endif %}

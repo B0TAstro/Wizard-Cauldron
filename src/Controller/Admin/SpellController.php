@@ -15,10 +15,16 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SpellController extends AbstractController
 {
     #[Route('/', name: 'admin_spell', methods: ['GET'])]
-    public function index(SpellRepository $repo): Response
+    public function index(Request $request, SpellRepository $spells): Response
     {
+        $sort = $request->query->get('sort') ?: 'created';
+        $dir  = $request->query->get('dir', $sort === 'active' ? 'desc' : 'asc');
+        $items = $spells->findAllSorted($sort, $dir);
+
         return $this->render('admin/spells/index.html.twig', [
-            'spells' => $repo->findBy([], ['createdAt' => 'DESC']),
+            'spells'      => $items,
+            'currentSort' => $sort,
+            'currentDir'  => strtolower($dir) === 'desc' ? 'desc' : 'asc',
         ]);
     }
 
