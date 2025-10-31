@@ -3,9 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Entity\UserSpell;
 use App\Form\UserType;
 use App\Form\Admin\AddCoinsType;
 use App\Form\Admin\ToggleAdminType;
+use App\Form\Admin\GrantSpellFormType;
+use App\Form\Admin\RevokeSpellFormType;
 use App\Repository\SpellRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserSpellRepository;
@@ -78,8 +81,13 @@ final class UserController extends AbstractController
 
 
     #[Route('/{id}/edit', name: 'admin_user_edit', methods: ['GET', 'POST'])]
-    public function edit(User $user, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
-    {
+    public function edit(
+        User $user,
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $hasher,
+        UserSpellRepository $userSpells
+    ): Response {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
@@ -94,10 +102,40 @@ final class UserController extends AbstractController
             $this->addFlash('success', 'User updated.');
             return $this->redirectToRoute('admin_user');
         }
+        $qb = fn($er) => $er->createQueryBuilder('s')
+            ->andWhere('s.isActive = :a')->setParameter('a', true)
+            ->orderBy('s.rarity', 'ASC')->addOrderBy('s.name', 'ASC');
+        $grantForm = $this->createForm(GrantSpellFormType::class, null, [
+            'action' => $this->generateUrl('admin_user_grant', ['id' => $user->getId()]),
+            'method' => 'POST',
+            'qb'     => $qb,
+        ]);
+
+        $links = $userSpells->findBy(['user' => $user->getId()]);
+        $owned = [];
+        $revokeForms = [];
+        foreach ($links as $link) {
+            $s = $link->getSpell();
+            if (!$s) {
+                continue;
+            }
+            $owned[] = $s;
+            $f = $this->createForm(RevokeSpellFormType::class, ['spellId' => $s->getId()], [
+                'action' => $this->generateUrl('admin_user_revoke', [
+                    'id'      => $user->getId(),
+                    'spellId' => $s->getId(),
+                ]),
+                'method' => 'POST',
+            ]);
+            $revokeForms[$s->getId()] = $f->createView();
+        }
 
         return $this->render('admin/user/edit.html.twig', [
-            'form' => $form,
-            'userEntity' => $user,
+            'form'         => $form,
+            'userEntity'   => $user,
+            'grantForm'    => $grantForm->createView(),
+            'ownedSpells'  => $owned,
+            'revokeForms'  => $revokeForms,
         ]);
     }
 
@@ -144,6 +182,88 @@ final class UserController extends AbstractController
 
         $this->addFlash('success', 'Roles updated.');
         return $this->redirectToRoute('admin');
+    }
+
+    #[Route('/{id}/grant', name: 'admin_user_grant', methods: ['POST'])]
+    public function grant(
+        User $user,
+        Request $request,
+        SpellRepository $spells,
+        UserSpellRepository $userSpells,
+        EntityManagerInterface $em
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $qb = fn($er) => $er->createQueryBuilder('s')
+            ->andWhere('s.isActive = :a')->setParameter('a', true)
+            ->orderBy('s.rarity', 'ASC')->addOrderBy('s.name', 'ASC');
+
+        $form = $this->createForm(GrantSpellFormType::class, null, ['qb' => $qb]);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('error', 'Invalid form.');
+            return $this->redirectToRoute('admin_user_edit', ['id' => $user->getId()]);
+        }
+
+        /** @var \App\Entity\Spell $spell */
+        $spell = $form->get('spell')->getData();
+        if (!$spell) {
+            $this->addFlash('error', 'Spell not found.');
+            return $this->redirectToRoute('admin_user_edit', ['id' => $user->getId()]);
+        }
+        if ($userSpells->findOneBy(['user' => $user, 'spell' => $spell])) {
+            $this->addFlash('warning', 'Already owned.');
+            return $this->redirectToRoute('admin_user_edit', ['id' => $user->getId()]);
+        }
+
+        $link = (new UserSpell())
+            ->setUser($user)
+            ->setSpell($spell)
+            ->setObtainedAt(new \DateTimeImmutable());
+
+        $em->persist($link);
+        $em->flush();
+
+        $this->addFlash('success', 'Spell granted.');
+        return $this->redirectToRoute('admin_user_edit', ['id' => $user->getId()]);
+    }
+
+    #[Route('/{id}/revoke/{spellId}', name: 'admin_user_revoke', methods: ['POST'])]
+    public function revoke(
+        User $user,
+        int $spellId,
+        Request $request,
+        UserSpellRepository $userSpells,
+        EntityManagerInterface $em
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $form = $this->createForm(RevokeSpellFormType::class, null);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('error', 'Invalid form.');
+            return $this->redirectToRoute('admin_user_edit', ['id' => $user->getId()]);
+        }
+
+        $postedId = (int)$form->get('spellId')->getData();
+        if ($postedId !== $spellId) {
+            $this->addFlash('error', 'Invalid spell id.');
+            return $this->redirectToRoute('admin_user_edit', ['id' => $user->getId()]);
+        }
+
+        $link = $userSpells->findOneBy(['user' => $user->getId(), 'spell' => $spellId]);
+        if (!$link) {
+            $this->addFlash('warning', 'Link not found.');
+            return $this->redirectToRoute('admin_user_edit', ['id' => $user->getId()]);
+        }
+
+        $em->remove($link);
+        $em->flush();
+
+        $this->addFlash('success', 'Spell revoked.');
+        return $this->redirectToRoute('admin_user_edit', ['id' => $user->getId()]);
     }
 
     #[Route('/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]

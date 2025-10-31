@@ -18,7 +18,7 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('pseudo', null, [
                 'label' => 'Username',
-                'required' => true, // HTML5 "required"
+                'required' => true,
                 'attr'  => ['autocomplete' => 'username'],
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter a username']),

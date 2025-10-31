@@ -50,4 +50,50 @@
 
 		{{ form_end(form) }}
 	</div>
+
+	<hr class="my-6 border-white/10">
+
+	<h2 class="text-lg font-medium mb-3">Collection</h2>
+
+	{{ form_start(grantForm, { attr: { class: 'mb-4 flex items-center gap-2' } }) }}
+	{{ form_widget(grantForm.spell, {vttr: { class: 'w-64 rounded-lg border border-white/15 bg-black/40 px-3 py-2' }}) }}
+	<button class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10">
+		Grant
+	</button>
+	{{ form_end(grantForm) }}
+	<div class="overflow-x-auto rounded-xl border border-white/10">
+		<table class="w-full text-sm">
+			<thead class="bg-white/5 text-white/70">
+				<tr>
+					<th class="px-3 py-2 text-left">Name</th>
+					<th class="px-3 py-2 text-left">Rarity</th>
+					<th class="px-3 py-2 text-left">Description</th>
+					<th class="px-3 py-2 text-right">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for s in ownedSpells %}
+					<tr class="border-t border-white/10 even:bg-white/5">
+						<td class="px-3 py-2">{{ s.name }}</td>
+						<td class="px-3 py-2">{{ s.rarity|capitalize }}</td>
+						<td class="px-3 py-2 text-white/70 truncate">{{ s.description }}</td>
+						<td class="px-3 py-2">
+							<div class="flex justify-end">
+								{{ form_start(revokeForms[s.id]) }}
+								{{ form_widget(revokeForms[s.id].spellId) }}
+								<button class="px-2.5 py-1.5 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10">
+									Revoke
+								</button>
+								{{ form_end(revokeForms[s.id]) }}
+							</div>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="4" class="px-3 py-6 text-center text-white/60">No spells.</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endblock %}

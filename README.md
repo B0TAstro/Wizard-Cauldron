@@ -114,7 +114,7 @@ UserSpell (obtention d’un sort par un user)
   - [X] Liste Users avec compteur **débloqués/total** + suppression
 - [ ] **Vues User**
   - [ ] Landing `/`
-  - [ ] **Collection** (grille, lock obfusqué, filtres optionnels)
+  - [X] **Collection** (grille, lock obfusqué, filtres optionnels)
 - [ ] **Gameplay**
   - [ ] Daily coin (`/daily/claim`) avec garde-fou jour courant
   - [ ] **Cauldron open** (`/cauldron/open`) : décrément, RNG pondérée, persist `UserSpell`, feedback session

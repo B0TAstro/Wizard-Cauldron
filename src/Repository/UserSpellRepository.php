@@ -16,30 +16,16 @@ class UserSpellRepository extends ServiceEntityRepository
         parent::__construct($registry, UserSpell::class);
     }
 
-    //    /**
-    //     * @return UserSpell[] Returns an array of UserSpell objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findSpellIdsUnlockedForUser(int $userId): array
+    {
+        $rows = $this->createQueryBuilder('us')
+            ->select('IDENTITY(us.spell) AS id')
+            ->where('us.user = :uid')
+            ->setParameter('uid', $userId)
+            ->getQuery()->getScalarResult();
 
-    //    public function findOneBySomeField($value): ?UserSpell
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return array_map(fn($r) => (int)$r['id'], $rows);
+    }
 
     public function countUnlockedForUser(int $userId): int
     {

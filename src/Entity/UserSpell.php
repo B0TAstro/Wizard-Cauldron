@@ -6,6 +6,7 @@ use App\Repository\UserSpellRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserSpellRepository::class)]
+#[ORM\Table(name: 'user_spell')]
 #[ORM\UniqueConstraint(name: 'uniq_user_spell', columns: ['user_id', 'spell_id'])]
 class UserSpell
 {
