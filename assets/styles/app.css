@@ -17,3 +17,57 @@
         @apply border-yellow-200 bg-yellow-50;
     }
 }
+
+.glow-wrap {
+    position: relative;
+    isolation: isolate;
+}
+
+.glow-wrap::before {
+    content: "";
+    position: absolute;
+    inset: -22%;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(900px 420px at 50% 50%, var(--glow) 0%, color-mix(in oklab, var(--glow), transparent 55%) 28%, transparent 60%);
+    opacity: 0;
+    transform: scale(0.98);
+    filter: blur(14px);
+    transition: opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease;
+}
+
+.glow-wrap:hover::before {
+    opacity: .55;
+    transform: scale(1.1);
+    filter: blur(22px);
+}
+
+/* Modale plein écran + glow global */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;
+}
+
+.modal-backdrop.active {
+    display: block;
+}
+
+.modal-dim {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(1200px 600px at 50% 50%, var(--glow, #94a3b8) 0%,
+            color-mix(in oklab, var(--glow, #94a3b8), transparent 60%) 25%, transparent 60%),
+        rgba(0, 0, 0, .65);
+    backdrop-filter: blur(6px);
+}
+
+.modal-panel {
+    position: relative;
+    z-index: 10;
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}

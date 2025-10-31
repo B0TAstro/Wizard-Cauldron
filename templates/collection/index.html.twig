@@ -1,0 +1,179 @@
+{% extends 'base.html.twig' %}
+{% block title %}My Collection
+{% endblock %}
+
+{% macro obfuscate(text, salt) %}
+	{% set banks = [
+    ['▚','▮','▱','▣','▦','▩','◼','◧','◪','◩','◨','◻','◾','◽','◵','◶','◷','▪'],
+    ['░','▒','▓','▔','▕','▖','▗','▘','▙','▚','▛','▜','▝','▞','▟','■','□','▢'],
+    ['⎔','◇','◆','◈','⬣','⬢','⬡','◼','◾','◽','▪','▫','◊','⌑','⬚','⬘','⬙','⬗'],
+  ] %}
+	{% set bank = banks[(salt|default(0)) % (banks|length)] %}
+	{% set chars = text|default('')|split('') %}
+	{% set out = '' %}
+	{% for c in chars %}
+		{% if c matches '/\\s/' %}
+			{% set out = out ~ c %}
+		{% elseif c in ['.', ',', ';', ':', '!', '?', '-', '_', '(', ')', '[', ']', '{', '}', '\'','"'] %}
+      {% set out = out ~ c %}
+    {% else %}
+      {% set out = out ~ random(bank) %}
+    {% endif %}
+  {% endfor %}
+  {{ out }}
+{% endmacro %}
+{% import _self as F %}
+
+{% block body %}
+  <div class="mb-5 flex items-center justify-between">
+    <h1 class="text-xl font-semibold">My Collection</h1>
+    <div class="flex items-center gap-2 text-sm">
+      {% set f = activeFilter %}
+      <a href="{{ path('collection', {f:'all'}) }}" class="px-2 py-1 rounded-lg border hover:underline {{ f == 'all' ? 'border-white/20 bg-white/10' : 'border-white/10' }}">All</a>
+      <a href="{{ path('collection', {f:'unlocked'}) }}" class="px-2 py-1 rounded-lg border hover:underline {{ f == 'unlocked' ? 'border-white/20 bg-white/10' : 'border-white/10' }}">Unlocked</a>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for s in spells %}
+      {% set isUnlocked = s.id in unlockedIds %}
+      {% set rarity = s.rarity|lower %}
+      {% set palette = {
+        'common':    { 'title':'text-slate-200',   'border':'border-slate-400/30',  'ring':'ring-slate-400/40',  'hex':'#94a3b8' },
+        'rare':      { 'title':'text-sky-300',     'border':'border-sky-400/30',    'ring':'ring-sky-400/40',    'hex':'#38bdf8' },
+        'epic':      { 'title':'text-violet-300',  'border':'border-violet-400/30', 'ring':'ring-violet-400/40', 'hex':'#a78bfa' },
+        'legendary': { 'title':'text-amber-300',   'border':'border-amber-400/40',  'ring':'ring-amber-400/40',  'hex':'#f59e0b' }
+      } %}
+      {% set colors = palette[rarity] ?? palette.common %}
+
+      {% set borderClass = isUnlocked ? colors.border : 'border-white/10' %}
+      {% set ringClass   = isUnlocked ? colors.ring   : 'ring-white/10' %}
+      {% set titleClass  = isUnlocked ? colors.title  : 'text-white/60' %}
+
+      <div>
+          {% if isUnlocked %}
+      <button
+        type="button"
+        class="w-full text-left relative rounded-2xl bg-black border {{ borderClass }} {{ ringClass }} ring-1 overflow-hidden"
+        data-popup-id="{{ s.id }}"
+        data-popup-url="{{ path('collection_popup', {id: s.id}) }}"
+        data-popup-glow="{{ colors.hex }}">
+    {% else %}
+      <div class="relative rounded-2xl bg-black border {{ borderClass }} {{ ringClass }} ring-1 overflow-hidden cursor-default" aria-disabled="true">
+    {% endif %}
+
+          <div class="grid grid-cols-[96px_1fr] gap-4 p-4">
+            <div class="relative flex items-center justify-center">
+              <div class="aspect-square w-20 overflow-hidden rounded-xl border {{ borderClass }} bg-black">
+                {% if s.imageUrl %}
+                  <img src="{{ s.imageUrl }}" alt="{{ s.name }}" class="h-full w-full object-contain {{ isUnlocked ? '' : 'grayscale brightness-[.35] contrast-[.75] blur-[3px]' }}">
+                {% else %}
+                  <div class="h-full w-full grid place-items-center text-white/30 text-xs">No image</div>
+                {% endif %}
+              </div>
+              {% if not isUnlocked %}
+                <div class="pointer-events-none absolute inset-0 rounded-xl bg-black/65"></div>
+              {% endif %}
+            </div>
+
+            <div class="min-w-0">
+              <h2 class="text-lg md:text-xl font-semibold leading-tight {{ titleClass }}">
+                {{ isUnlocked ? s.name : F.obfuscate(s.name, s.id) }}
+              </h2>
+              <p class="mt-1 text-sm leading-relaxed line-clamp-2 {{ isUnlocked ? 'text-white/85' : 'text-white/50' }}">
+                {{ isUnlocked ? s.description : F.obfuscate(s.description, s.id) }}
+              </p>
+            </div>
+          </div>
+
+        {% if isUnlocked %}</button>{% else %}</div>{% endif %}
+      </div>
+    {% else %}
+      <div class="col-span-full text-center text-white/60 py-16">No spells.</div>
+    {% endfor %}
+  </div>
+
+  <div id="spell-modal" class="modal-backdrop" aria-hidden="true">
+  <div class="modal-dim"></div>
+  <div class="modal-panel">
+    <div class="mx-auto w-full max-w-3xl">
+      <button id="spell-modal-close" class="mb-3 rounded-lg border border-white/20 px-2.5 py-1 text-sm hover:bg-white/10">
+        Close
+      </button>
+      <div id="spell-modal-content"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // ---- assure la présence du modal
+    function ensureModal() {
+      let modal = document.getElementById('spell-modal');
+      if (!modal) {
+        document.body.insertAdjacentHTML('beforeend', `
+<div id="spell-modal" class="modal-backdrop" aria-hidden="true">
+  <div class="modal-dim"></div>
+  <div class="modal-panel">
+    <div class="mx-auto w-full max-w-3xl">
+      <button id="spell-modal-close" class="mb-3 rounded-lg border border-white/20 px-2.5 py-1 text-sm hover:bg-white/10">Close</button>
+      <div id="spell-modal-content"></div>
+    </div>
+  </div>
+</div>`);
+      }
+      return document.getElementById('spell-modal');
+    }
+
+    const modal   = ensureModal();
+    const content = document.getElementById('spell-modal-content');
+    const closeBtn= document.getElementById('spell-modal-close');
+
+    function openModal(glow) {
+      modal.style.setProperty('--glow', glow || '#94a3b8');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      modal.classList.remove('active');
+      if (content) content.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    // open
+    document.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-popup-id]');
+      if (!btn) return;
+
+      const url  = btn.dataset.popupUrl;
+      const glow = btn.dataset.popupGlow || '#94a3b8';
+      if (!url) { console.warn('No data-popup-url on element'); return; }
+
+      try {
+        const resp = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        if (!resp.ok) { console.warn('Popup fetch failed:', resp.status, resp.statusText); return; }
+        const html = await resp.text();
+        if (!content) { console.warn('#spell-modal-content missing'); return; }
+        content.innerHTML = html;
+
+        const root = content.querySelector('[data-glow]');
+        openModal(root?.dataset?.glow || glow);
+      } catch (err) {
+        console.error('Popup fetch error:', err);
+      }
+    });
+
+    // close
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target.classList.contains('modal-dim')) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+    });
+  });
+  </script>
+{% endblock %}

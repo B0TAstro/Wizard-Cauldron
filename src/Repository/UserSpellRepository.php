@@ -16,15 +16,14 @@ class UserSpellRepository extends ServiceEntityRepository
         parent::__construct($registry, UserSpell::class);
     }
 
-    public function findSpellIdsUnlockedForUser(int $userId): array
+    public function findUnlockedSpellIdsForUser(int $userId): array
     {
-        $rows = $this->createQueryBuilder('us')
-            ->select('IDENTITY(us.spell) AS id')
-            ->where('us.user = :uid')
-            ->setParameter('uid', $userId)
-            ->getQuery()->getScalarResult();
+        $qb = $this->createQueryBuilder('us')
+            ->select('IDENTITY(us.spell) AS spell_id')
+            ->andWhere('us.user = :u')->setParameter('u', $userId);
 
-        return array_map(fn($r) => (int)$r['id'], $rows);
+        $rows = $qb->getQuery()->getArrayResult();
+        return array_map(static fn(array $r) => (int)$r['spell_id'], $rows);
     }
 
     public function countUnlockedForUser(int $userId): int

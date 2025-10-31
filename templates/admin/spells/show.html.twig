@@ -13,33 +13,6 @@
 } %}
 {% set colors = palette[rarity] ?? palette.common %}
 
-{% block stylesheets %}
-	{{ parent() }}
-	<style>
-		.glow-wrap {
-			position: relative;
-			isolation: isolate;
-		}
-		.glow-wrap::before {
-			content: "";
-			position: absolute;
-			inset: -22%;
-			z-index: 0;
-			pointer-events: none;
-			background: radial-gradient(900px 420px at 50% 50%, var(--glow) 0%, color-mix(in oklab, var(--glow), transparent 55%) 28%, transparent 60%);
-			opacity: 0;
-			transform: scale(0.98);
-			filter:blur(14px);
-			transition: opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease;
-		}
-		.glow-wrap:hover::before {
-			opacity: .55;
-			transform: scale(1.1);
-			filter:blur(22px);
-		}
-	</style>
-{% endblock %}
-
 {% block body %}
 	<div class="mt-6">
 		<a href="{{ path('admin_spell') }}" class="underline hover:text-white">← Back to list</a>

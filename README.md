@@ -118,6 +118,7 @@ UserSpell (obtention d’un sort par un user)
 - [ ] **Gameplay**
   - [ ] Daily coin (`/daily/claim`) avec garde-fou jour courant
   - [ ] **Cauldron open** (`/cauldron/open`) : décrément, RNG pondérée, persist `UserSpell`, feedback session
+  - [ ] Deply on Symfony Cloud
 - [ ] **Polish (optionnel)**
   - [ ] UI/DA (anim chaudron, cartes rareté, empty states)
   - [ ] 404/403 propres, messages flash cohérents
