@@ -3,6 +3,60 @@
 > **Statut** : **Cible d’apprentissage** = **Symfony**, **Formulaires**, **Session** et **Database**
 > **Durée** : ~3 semaines 
 
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- PHP 8.2+
+- Composer
+- PostgreSQL (or any Doctrine-supported DB)
+- Symfony CLI *(optional)*
+
+### Install
+```bash
+git clone <your-repo-url>
+cd Wizard-Cauldron
+composer install
+cp .env .env.local
+```
+
+Edit .env.local and set your DB url (PostgreSQL example):
+
+```bash
+DATABASE_URL="postgresql://postgres@localhost:5432/wizard_cauldron?serverVersion=17&charset=utf8"
+APP_ENV=dev
+APP_DEBUG=1
+```
+
+Create DB & run migrations:
+
+```bash
+Copier le code
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+```
+
+Run the server:
+
+```bash
+symfony server:start -d && symfony open:local
+# or
+php -S 127.0.0.1:8000 -t public
+```
+
+### 👤 Accounts & Admin
+Create an account at /register.
+
+Promote/demote to admin via the console:
+
+```bash
+php bin/console app:user:promote-admin <email-or-username>
+php bin/console app:user:promote-admin <email-or-username> --demote
+```
+
+---
+
 ## 🎯 Objectifs d’apprentissage
 - Prendre en main **Symfony** : routing, contrôleurs et vues **Twig**
 - Manipuler des **Formulaires**
@@ -120,7 +174,7 @@ UserSpell (obtention d’un sort par un user)
   - [X] **Cauldron open** (`/cauldron/open`) : décrément, RNG pondérée, persist `UserSpell`, feedback session
   - [ ] Deply on Symfony Cloud
 - [ ] **Polish (optionnel)**
-  - [?] Ajout d'une section Trading
+  - [X] Ajout d'une section Trading
   - [ ] UI/DA (anim chaudron, cartes rareté, empty states)
   - [ ] 404/403 propres, messages flash cohérents
   - [ ] Paramétrage poids rareté en base/env
@@ -144,7 +198,3 @@ UserSpell (obtention d’un sort par un user)
 
 ### Licence
 À définir (MIT par défaut).
-
-
-creer une commande pour creer un user admin
-utiliser les form
