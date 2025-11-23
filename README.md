@@ -1,4 +1,4 @@
-# Wizard Cauldron — Jeu d’Opening & Collection _(Brouillon)_
+# Wizard Cauldron — Jeu d’Opening & Collection
 
 > **Statut** : **Cible d’apprentissage** = **Symfony**, **Formulaires**, **Session** et **Database**
 > **Durée** : ~3 semaines 
@@ -15,7 +15,7 @@
 
 ### Install
 ```bash
-git clone <your-repo-url>
+git clone [<Wizard-Caauldron>](https://github.com/B0TAstro/Wizard-Cauldron/edit/main/README.md)
 cd Wizard-Cauldron
 composer install
 cp .env .env.local
@@ -32,7 +32,6 @@ APP_DEBUG=1
 Create DB & run migrations:
 
 ```bash
-Copier le code
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
@@ -46,9 +45,7 @@ php -S 127.0.0.1:8000 -t public
 ```
 
 ### 👤 Accounts & Admin
-Create an account at /register.
-
-Promote/demote to admin via the console:
+Create an account at /register. Promote/demote to admin via the console:
 
 ```bash
 php bin/console app:user:promote-admin <email-or-username>
