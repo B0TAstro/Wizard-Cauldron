@@ -18,14 +18,28 @@ class UserSpellRepository extends ServiceEntityRepository
         parent::__construct($registry, UserSpell::class);
     }
 
+    public function countUnlockedForUser(int $userId): int
+    {
+        return (int) $this->createQueryBuilder('us')
+            ->select('COUNT(us.id)')
+            ->innerJoin('us.spell', 's')
+            ->where('us.user = :u')
+            ->andWhere('s.isActive = true')
+            ->setParameter('u', $userId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function findUnlockedSpellIdsForUser(int $userId): array
     {
         $rows = $this->createQueryBuilder('us')
-            ->select('DISTINCT IDENTITY(us.spell) AS sid')
-            ->where('us.user = :u')->setParameter('u', $userId)
-            ->getQuery()->getScalarResult();
+            ->select('IDENTITY(us.spell) AS id')
+            ->where('us.user = :u')
+            ->setParameter('u', $userId)
+            ->getQuery()
+            ->getScalarResult();
 
-        return array_map(fn($r) => (int)$r['sid'], $rows);
+        return array_map(fn(array $r) => (int) $r['id'], $rows);
     }
 
     public function hasUserSpell(User $user, Spell $spell): bool

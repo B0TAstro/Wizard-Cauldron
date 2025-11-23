@@ -112,14 +112,15 @@ UserSpell (obtention d’un sort par un user)
 - [X] **Vues Admin**
   - [X] CRUD Spells (lister / créer / éditer / supprimer)
   - [X] Liste Users avec compteur **débloqués/total** + suppression
-- [ ] **Vues User**
-  - [ ] Landing `/`
+- [X] **Vues User**
+  - [X] Landing `/`
   - [X] **Collection** (grille, lock obfusqué, filtres optionnels)
 - [ ] **Gameplay**
-  - [ ] Daily coin (`/daily/claim`) avec garde-fou jour courant
-  - [ ] **Cauldron open** (`/cauldron/open`) : décrément, RNG pondérée, persist `UserSpell`, feedback session
+  - [X] Daily coin (`/daily/claim`) avec garde-fou jour courant
+  - [X] **Cauldron open** (`/cauldron/open`) : décrément, RNG pondérée, persist `UserSpell`, feedback session
   - [ ] Deply on Symfony Cloud
 - [ ] **Polish (optionnel)**
+  - [ ] Ajout d'une section Trading
   - [ ] UI/DA (anim chaudron, cartes rareté, empty states)
   - [ ] 404/403 propres, messages flash cohérents
   - [ ] Paramétrage poids rareté en base/env
