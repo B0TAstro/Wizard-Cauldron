@@ -27,6 +27,12 @@
 {% block body %}
   <div class="mb-5 flex items-center justify-between">
     <h1 class="text-xl font-semibold">My Collection</h1>
+    {% if app.user %}
+      <a href="{{ path('trade') }}"
+        class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10">
+        Mystery Trade
+      </a>
+    {% endif %}
     <div class="flex items-center gap-2 text-sm">
       {% set f = activeFilter %}
       <a href="{{ path('collection', {f:'all'}) }}" class="px-2 py-1 rounded-lg border hover:underline {{ f == 'all' ? 'border-white/20 bg-white/10' : 'border-white/10' }}">All</a>

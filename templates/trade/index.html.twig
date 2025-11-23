@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mystery Trade{% endblock %}
+
+{% block body %}
+<main class="min-h-[60dvh] flex items-center justify-center">
+  <div class="w-full max-w-xl">
+    <h1 class="text-2xl font-semibold mb-2">Mystery Trade</h1>
+    <p class="text-white/70 mb-6">
+      Join the queue. As soon as another player joins, a random spell from each collection
+      will be swapped (we try to avoid duplicates when possible).
+    </p>
+
+    {% for label, messages in app.flashes %}
+      {% for message in messages %}
+        <div class="mb-3 rounded-lg border border-white/15 px-3 py-2 {{ label == 'success' ? 'bg-emerald-500/10 text-emerald-200' : 'bg-white/5 text-white/80' }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endfor %}
+
+    <div class="rounded-2xl border border-white/10 bg-black/40 p-4">
+      {% set status = ticket.status ?? 'none' %}
+
+      {% if status == 'waiting' %}
+        <div class="mb-4 text-white/80">⏳ Waiting for another player…</div>
+        {{ form_start(cancelForm) }}
+          <button class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10">Leave queue</button>
+        {{ form_end(cancelForm) }}
+
+      {% elseif status == 'done' %}
+        <div class="mb-3 text-white">
+          ✅ Trade completed with <span class="font-semibold">{{ ticket.partner }}</span><br>
+          Gave: <span class="font-medium">{{ ticket.gave }}</span><br>
+          Received: <span class="font-medium">{{ ticket.received }}</span>
+        </div>
+        {{ form_start(joinForm) }}
+          <button class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10">Trade again</button>
+        {{ form_end(joinForm) }}
+
+      {% elseif status == 'failed' %}
+        <div class="mb-3 text-white/80">No useful swap possible right now.</div>
+        {{ form_start(joinForm) }}
+          <button class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10">Try again</button>
+        {{ form_end(joinForm) }}
+
+      {% else %}
+        {{ form_start(joinForm) }}
+          <button class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10">Join the queue</button>
+        {{ form_end(joinForm) }}
+      {% endif %}
+    </div>
+
+    <p class="mt-4 text-sm text-white/50">
+      Note: if both players own exactly the same spells, a swap may be impossible.
+    </p>
+  </div>
+</main>
+{% endblock %}

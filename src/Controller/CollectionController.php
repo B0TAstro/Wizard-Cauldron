@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Form\TradeJoinType;
 
 #[IsGranted('ROLE_USER')]
 final class CollectionController extends AbstractController
@@ -35,10 +36,16 @@ final class CollectionController extends AbstractController
             ));
         }
 
+        $formTrade = $this->createForm(\App\Form\TradeJoinType::class);
+
         return $this->render('collection/index.html.twig', [
             'spells'       => $all,
             'unlockedIds'  => $unlockedIds,
             'activeFilter' => $activeFilter,
+            'form_trade_join' => $this->createForm(TradeJoinType::class, null, [
+                'action' => $this->generateUrl('trade'),
+                'method' => 'POST',
+            ])->createView(),
         ]);
     }
 
