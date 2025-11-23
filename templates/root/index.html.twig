@@ -1,9 +1,52 @@
 {% extends 'base.html.twig' %}
 {% block title %}Home{% endblock %}
+
 {% block body %}
-	<main style="display:grid;place-items:center;min-height:60dvh;">
-		<div style="text-align:center">
-			<h1>Work in progress...</h1>
-		</div>
-	</main>
+  <main class="min-h-[60dvh] grid place-items-center">
+    <div class="text-center max-w-xl">
+      <h1 class="text-3xl font-semibold mb-2">Wizard Cauldron</h1>
+      <p class="text-white/80">
+        Collecte un sort unique par jour et ouvre le chaudron pour tenter ta chance.
+      </p>
+
+      {% if not app.user %}
+        <div class="mt-6 space-x-2">
+          <a href="{{ path('login') }}" class="px-3 py-2 rounded-lg bg-white text-black hover:bg-white/90">Se connecter</a>
+          <a href="{{ path('register') }}" class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10">Créer un compte</a>
+        </div>
+      {% else %}
+        <div class="mt-6">
+          <div class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+            <span class="text-white/70 text-sm">Coins</span>
+            <span class="text-xl font-semibold">{{ app.user.coins }}</span>
+          </div>
+        </div>
+
+        <div class="mt-6 flex items-center justify-center gap-3">
+          {% if dailyForm is defined and dailyForm %}
+            {{ form_start(dailyForm, { attr: { class: 'inline' } }) }}
+              {% set claimedToday = app.user.lastDaily and app.user.lastDaily|date('Y-m-d') == 'now'|date('Y-m-d') %}
+              <button {{ claimedToday ? 'disabled' : '' }}
+                class="px-3 py-2 rounded-lg bg-white text-black hover:bg-white/90 disabled:opacity-40 disabled:cursor-not-allowed">
+                Claim quotidien (+1)
+              </button>
+            {{ form_end(dailyForm) }}
+          {% endif %}
+
+          {% if openForm is defined and openForm %}
+            {{ form_start(openForm, { attr: { class: 'inline' } }) }}
+              <button {{ app.user.coins < 1 ? 'disabled' : '' }}
+                class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed">
+                Ouvrir le chaudron (−1)
+              </button>
+            {{ form_end(openForm) }}
+          {% endif %}
+        </div>
+
+        <p class="mt-3 text-sm text-white/60">
+          Raretés: Common 60% • Rare 25% • Epic 10% • Legendary 5%
+        </p>
+      {% endif %}
+    </div>
+  </main>
 {% endblock %}

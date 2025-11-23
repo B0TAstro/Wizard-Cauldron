@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block title %}Drop{% endblock %}
+
+{% set rarity = spell.rarity|lower %}
+{% set palette = {
+  'common':    { 'title':'text-slate-200',   'border':'border-slate-400/30',  'ring':'ring-slate-400/40',  'hex':'#94a3b8' },
+  'rare':      { 'title':'text-sky-300',     'border':'border-sky-400/30',    'ring':'ring-sky-400/40',    'hex':'#38bdf8' },
+  'epic':      { 'title':'text-violet-300',  'border':'border-violet-400/30', 'ring':'ring-violet-400/40', 'hex':'#a78bfa' },
+  'legendary': { 'title':'text-amber-300',   'border':'border-amber-400/40',  'ring':'ring-amber-400/40',  'hex':'#f59e0b' }
+} %}
+{% set colors = palette[rarity] ?? palette.common %}
+
+{% block body %}
+  <div class="min-h-[70dvh] grid place-items-center">
+    <div class="relative w-full max-w-3xl" style="--glow: {{ colors.hex }}">
+      <div class="absolute -inset-24 opacity-60 blur-2xl pointer-events-none"
+           style="background: radial-gradient(600px 300px at 50% 50%, var(--glow), transparent 60%);"></div>
+
+      <article class="relative z-10 rounded-[28px] bg-black border {{ colors.border }} ring-1 {{ colors.ring }} animate-[pop_.25s_ease-out]">
+        <div class="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-6 md:gap-8 p-6 md:p-8">
+          <div class="flex items-center justify-center">
+            <div class="aspect-square w-24 overflow-hidden rounded-xl border {{ colors.border }} bg-black">
+              {% if spell.imageUrl %}
+                <img src="{{ spell.imageUrl }}" alt="{{ spell.name }}" class="h-full w-full object-contain">
+              {% else %}
+                <div class="h-full w-full grid place-items-center text-white/30 text-xs">No image</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="min-w-0">
+            <div class="text-sm text-white/60 mb-1">
+              {% if isNew %}
+                🎉 Nouveau sort ajouté à ta collection
+              {% else %}
+                Déjà possédé — doublon
+              {% endif %}
+            </div>
+            <h2 class="text-3xl md:text-4xl font-semibold leading-tight {{ colors.title }}">{{ spell.name }}</h2>
+            {% if spell.description %}
+              <p class="mt-3 text-base md:text-lg text-white/85 leading-relaxed">{{ spell.description }}</p>
+            {% endif %}
+
+            <div class="mt-6 flex gap-2">
+              <a href="{{ path('collection') }}" class="px-3 py-2 rounded-lg bg-white text-black hover:bg-white/90">Voir ma collection</a>
+              <a href="{{ path('home') }}" class="px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10">Retour à l’accueil</a>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    @keyframes pop { from { transform: scale(.96); opacity: .0 } to { transform: scale(1); opacity: 1 } }
+  </style>
+{% endblock %}
