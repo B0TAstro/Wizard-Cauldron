@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
+use App\Entity\Spell;
 use App\Entity\UserSpell;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,19 +20,20 @@ class UserSpellRepository extends ServiceEntityRepository
 
     public function findUnlockedSpellIdsForUser(int $userId): array
     {
-        $qb = $this->createQueryBuilder('us')
-            ->select('IDENTITY(us.spell) AS spell_id')
-            ->andWhere('us.user = :u')->setParameter('u', $userId);
+        $rows = $this->createQueryBuilder('us')
+            ->select('DISTINCT IDENTITY(us.spell) AS sid')
+            ->where('us.user = :u')->setParameter('u', $userId)
+            ->getQuery()->getScalarResult();
 
-        $rows = $qb->getQuery()->getArrayResult();
-        return array_map(static fn(array $r) => (int)$r['spell_id'], $rows);
+        return array_map(fn($r) => (int)$r['sid'], $rows);
     }
 
-    public function countUnlockedForUser(int $userId): int
+    public function hasUserSpell(User $user, Spell $spell): bool
     {
         return (int)$this->createQueryBuilder('us')
             ->select('COUNT(us.id)')
-            ->andWhere('us.user = :u')->setParameter('u', $userId)
-            ->getQuery()->getSingleScalarResult();
+            ->where('us.user = :u')->andWhere('us.spell = :s')
+            ->setParameter('u', $user)->setParameter('s', $spell)
+            ->getQuery()->getSingleScalarResult() > 0;
     }
 }

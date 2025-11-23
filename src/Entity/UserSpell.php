@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserSpellRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserSpellRepository::class)]
 #[ORM\Table(name: 'user_spell')]
@@ -21,11 +22,15 @@ class UserSpell
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Spell $spell = null;
 
+    #[ORM\Column(type: 'uuid', unique: true)]
+    private Uuid $uuid;
+
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $obtainedAt;
 
     public function __construct()
     {
+        $this->uuid = Uuid::v4();
         $this->obtainedAt = new \DateTimeImmutable();
     }
 
@@ -36,6 +41,8 @@ class UserSpell
 
     public function getSpell(): ?Spell { return $this->spell; }
     public function setSpell(Spell $spell): self { $this->spell = $spell; return $this; }
+
+    public function getUuid(): Uuid { return $this->uuid; }
 
     public function getObtainedAt(): \DateTimeImmutable { return $this->obtainedAt; }
     public function setObtainedAt(\DateTimeImmutable $d): self { $this->obtainedAt = $d; return $this; }
